@@ -87,7 +87,7 @@ function SignUp({navigation}: StartProps): React.JSX.Element {
     const styles = StyleSheet.create({
       safeArea: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#FFFFFF',
       },
       scrollViewContent: {
         flexGrow: 1,

@@ -27,6 +27,7 @@ function Home({navigation}: StartProps): React.JSX.Element {
 
   const irPersonita = async () => {
     //Aquí se va a ir para ver la personita
+    navigation.navigate('EstadoDeSalud');
   };
 
   const irMensajes = async () => {
@@ -40,11 +41,6 @@ function Home({navigation}: StartProps): React.JSX.Element {
 
   return (
     <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor="#d7802040"
-        translucent={false}
-      />
       <View style={{ flex: 1 }}>
         <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
           <View style={{ backgroundColor: isDarkMode ? Colors.black : Colors.white, flex: 1 }}>

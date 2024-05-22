@@ -10,6 +10,7 @@ import IngresarDatos from './components/IngresarDatos';
 import Contactos from './components/Contactos';
 import Mensaje from './components/Mensaje';
 import Alarmas from './components/Alarmas';
+import EstadoDeSalud from './components/EstadoDeSalud';
 
 type Contacto = {
   id: string;
@@ -29,6 +30,7 @@ export type RootStackParamList = {
   Contactos: undefined;
   Mensaje: { contacto: Contacto };
   Alarmas: undefined;
+  EstadoDeSalud: undefined;
 }
 
 export type StackNavigation = NavigationProp<RootStackParamList>;
@@ -77,6 +79,10 @@ function App(): React.JSX.Element {
         <Stack.Screen
           name="Alarmas"
           component={Alarmas}
+        />
+        <Stack.Screen
+          name="EstadoDeSalud"
+          component={EstadoDeSalud}
         />
       </Stack.Navigator>
     </NavigationContainer>
