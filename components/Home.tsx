@@ -20,8 +20,9 @@ function Home({navigation}: StartProps): React.JSX.Element {
     navigation.navigate('IngresarDatos');
   };
 
-  const irHistorial = async () => {
+  const irAlarmas = async () => {
     //Aquí se va a ir para ver historial
+    navigation.navigate('Alarmas');
   };
 
   const irPersonita = async () => {
@@ -69,7 +70,7 @@ function Home({navigation}: StartProps): React.JSX.Element {
         <View style={styles.bottomBarContainer}>
           <View style={styles.bottomBar}>
 
-            <TouchableOpacity style={styles.button} onPress={irHistorial}>
+            <TouchableOpacity style={styles.button} onPress={irAlarmas}>
               <Image
                 source={require('../imagenes/reloj.png')} // Ruta corregida
                 style={styles.buttonImage}
