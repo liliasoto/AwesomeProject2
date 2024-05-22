@@ -6,6 +6,16 @@ import Start from './components/Start';
 import SignUp from './components/SignUp';
 import CambiarCuenta from './components/CambiarCuenta';
 import DatosPer from './components/DatosPer';
+import IngresarDatos from './components/IngresarDatos';
+import Contactos from './components/Contactos';
+import Mensaje from './components/Mensaje';
+
+type Contacto = {
+  id: string;
+  nombre: string;
+  correo: string;
+  estado: string;
+};
 
 export type RootStackParamList = {
   Login: undefined;
@@ -14,6 +24,9 @@ export type RootStackParamList = {
   SignUp: undefined;
   CambiarCuenta: undefined;
   DatosPer: undefined;
+  IngresarDatos: undefined;
+  Contactos: undefined;
+  Mensaje: { contacto: Contacto };
 }
 
 export type StackNavigation = NavigationProp<RootStackParamList>;
@@ -46,6 +59,18 @@ function App(): React.JSX.Element {
         <Stack.Screen
           name="DatosPer"
           component={DatosPer}
+        />
+        <Stack.Screen
+          name="IngresarDatos"
+          component={IngresarDatos}
+        />
+        <Stack.Screen
+          name="Contactos"
+          component={Contactos}
+        />
+        <Stack.Screen
+          name="Mensaje"
+          component={Mensaje}
         />
       </Stack.Navigator>
     </NavigationContainer>

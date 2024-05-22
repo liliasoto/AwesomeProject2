@@ -1,8 +1,15 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { Alert, SafeAreaView, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View, Image, useColorScheme, Text } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { RootStackParamList } from '../App';
 
-const Home: React.FC = () => {
+type StartProps = {
+  navigation: StackNavigationProp<RootStackParamList, 'Start'>;
+};
+
+
+function Home({navigation}: StartProps): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
   const irMenu = async () => {
@@ -10,7 +17,7 @@ const Home: React.FC = () => {
   };
 
   const irTomarMedicion = async () => {
-    //Aquí se va a ir para tomar medición
+    navigation.navigate('IngresarDatos');
   };
 
   const irHistorial = async () => {
@@ -22,7 +29,7 @@ const Home: React.FC = () => {
   };
 
   const irMensajes = async () => {
-    //Aquí se va a ir para mensajears
+    navigation.navigate('Contactos');
   };
 
   const backgroundStyle = {
