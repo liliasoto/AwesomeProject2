@@ -21,6 +21,11 @@ function SignUp({navigation}: StartProps): React.JSX.Element {
         navigation.navigate('DatosPer');
         return;
     };
+
+    const irASignIn = function () {
+      navigation.navigate('CambiarCuenta');
+      return;
+  };
     
     const handleCheckboxToggle = () => {
         setIsChecked(!isChecked);
@@ -76,7 +81,7 @@ function SignUp({navigation}: StartProps): React.JSX.Element {
             <View style={styles.signupContainer}>
               <Text style={styles.signupText}>¿Tienes una cuenta?</Text>
               <TouchableOpacity>
-                <Text style={styles.signupButton}>Sign in!</Text>
+                <Text style={styles.signupButton} onPress={irASignIn}>Sign in!</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>

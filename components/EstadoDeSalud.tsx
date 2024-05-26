@@ -4,15 +4,16 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import Svg, { Circle, G, Text as SvgText } from 'react-native-svg';
 import PureChart from 'react-native-pure-chart';
-import { useNavigation } from '@react-navigation/native';
-import { Chart } from 'chart.js';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../App';
 
-const EstadoDeSalud = () => {
-  const navigation = useNavigation();
+type StartProps = {
+  navigation: StackNavigationProp<RootStackParamList, 'Home'>;
+};
+
+function EstadoDeSalud({navigation}: StartProps): React.JSX.Element {
   const healthPercentage = 86;
   const riskPercentage = 10;
-
-  const windowWidth = Dimensions.get('window').width;
 
   const oxigenoData = [
     {
@@ -56,8 +57,8 @@ const EstadoDeSalud = () => {
     },
   ];
 
-  const irADetalles = () => {
-    // Código para navegar a otra pantalla
+  const irADetalles = async () => {
+    navigation.navigate('Historial');
   };
 
   const renderCircularGraph = (percentage: number, color: string, label: string) => (
@@ -115,9 +116,11 @@ const EstadoDeSalud = () => {
           <View style={styles.dividerDark} />
         </View>
       </View>
-      <View style={styles.parachart}>
-        <PureChart data={oxigenoData} type="bar" height={200} width='100%'/>
-      </View>
+      <ScrollView horizontal>
+        <View style={styles.parachart}>
+          <PureChart data={oxigenoData} type="bar" height={200} width= "100%" />
+        </View>
+      </ScrollView>
 
       <View style={styles.sectionHeader2}>
         <Text style={styles.sectionTitle}>Pulso cardiaco</Text>
@@ -126,7 +129,11 @@ const EstadoDeSalud = () => {
           <View style={styles.dividerDark} />
         </View>
       </View>
-      <PureChart data={pulsoData} type="bar" height={200} width='100%'/>
+      <ScrollView horizontal>
+        <View style={styles.parachart}>
+          <PureChart data={pulsoData} type="bar" height={200} width= "100%" />
+        </View>
+      </ScrollView>
 
       <View style={styles.flexibleSpace}></View>
       <TouchableOpacity onPress={irADetalles}>

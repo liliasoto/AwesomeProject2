@@ -1,7 +1,7 @@
 // components/Alarmas.tsx
 
 import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity, TextInput, Switch, Modal } from 'react-native';
+import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity, TextInput, Switch, Modal, Image } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
@@ -79,7 +79,10 @@ const Alarmas: React.FC<AlarmasProps> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Alarmas</Text>
+      <View style={styles.alarmHeader}>
+        <Image source={require('../imagenes/clock.png')}  style={styles.alarmIcon} />
+        <Text style={styles.alarmText}>Alarmas</Text>
+      </View>
       <TouchableOpacity style={styles.newAlarmButton} onPress={() => setModalVisibility(true)}>
         <Text style={styles.newAlarmButtonText}>Nueva Alarma</Text>
       </TouchableOpacity>
@@ -184,10 +187,23 @@ const styles = StyleSheet.create({
   },
   alarmText: {
     flex: 1,
+    fontSize: 30, // Ajusta el tamaño de fuente para que coincida con el título
+    fontWeight: 'bold',
+    color: '#45504C',
   },
   alarmName: {
     fontWeight: 'bold',
     fontSize: 18,
+  },
+  alarmHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  alarmIcon: {
+    width: 50, 
+    height: 50,
+    marginRight: 10,
   },
   input: {
     width: '100%',

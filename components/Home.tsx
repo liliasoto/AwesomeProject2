@@ -13,7 +13,7 @@ function Home({navigation}: StartProps): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
   const irMenu = async () => {
-    //Aquí se va a ir para el menú lateral
+    navigation.navigate('Yo');
   };
 
   const irTomarMedicion = async () => {
@@ -68,19 +68,19 @@ function Home({navigation}: StartProps): React.JSX.Element {
 
             <TouchableOpacity style={styles.button} onPress={irAlarmas}>
               <Image
-                source={require('../imagenes/reloj.png')} // Ruta corregida
+                source={require('../imagenes/c.png')} // Ruta corregida
                 style={styles.buttonImage}
               />
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={irPersonita}>
               <Image
-                source={require('../imagenes/personita.png')} // Ruta corregida
+                source={require('../imagenes/p.png')} // Ruta corregida
                 style={styles.buttonImage}
               />
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={irMensajes}>
               <Image
-                source={require('../imagenes/mensajes.png')} // Ruta corregida
+                source={require('../imagenes/m.png')} // Ruta corregida
                 style={styles.buttonImage}
               />
             </TouchableOpacity>
