@@ -1,6 +1,6 @@
 import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useState } from 'react';
-import { Alert, SafeAreaView, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View, Image, useColorScheme, Text } from 'react-native';
+import React from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View, Image, useColorScheme, Text } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { RootStackParamList } from '../App';
 

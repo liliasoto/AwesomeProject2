@@ -1,6 +1,4 @@
-// components/EstadoDeSalud.tsx
-
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import Svg, { Circle, G, Text as SvgText } from 'react-native-svg';
 import PureChart from 'react-native-pure-chart';
@@ -11,7 +9,7 @@ type StartProps = {
   navigation: StackNavigationProp<RootStackParamList, 'Home'>;
 };
 
-function EstadoDeSalud({navigation}: StartProps): React.JSX.Element {
+function EstadoDeSalud({ navigation }: StartProps): React.JSX.Element {
   const healthPercentage = 86;
   const riskPercentage = 10;
 
@@ -64,7 +62,7 @@ function EstadoDeSalud({navigation}: StartProps): React.JSX.Element {
   const renderCircularGraph = (percentage: number, color: string, label: string) => (
     <View style={styles.circularGraphContainer}>
       <Text style={styles.graphLabel}>{label}</Text>
-      <Svg width={100} height={100} viewBox="0 0 100 100">
+      <Svg width={80} height={80} viewBox="0 0 100 100">
         <G rotation="-90" origin="50, 50">
           <Circle cx="50" cy="50" r="45" stroke="#E0E0E0" strokeWidth="10" fill="none" />
           <Circle
@@ -83,7 +81,7 @@ function EstadoDeSalud({navigation}: StartProps): React.JSX.Element {
           y="50"
           textAnchor="middle"
           dy=".3em"
-          fontSize="20"
+          fontSize="25"
           fill={color}
           fontWeight="bold"
         >
@@ -117,8 +115,8 @@ function EstadoDeSalud({navigation}: StartProps): React.JSX.Element {
         </View>
       </View>
       <ScrollView horizontal>
-        <View style={styles.parachart}>
-          <PureChart data={oxigenoData} type="bar" height={200} width= "100%" />
+        <View style={styles.chartWrapper}>
+          <PureChart data={oxigenoData} type="bar" height={200} width={Dimensions.get('window').width * 1.5} />
         </View>
       </ScrollView>
 
@@ -130,8 +128,8 @@ function EstadoDeSalud({navigation}: StartProps): React.JSX.Element {
         </View>
       </View>
       <ScrollView horizontal>
-        <View style={styles.parachart}>
-          <PureChart data={pulsoData} type="bar" height={200} width= "100%" />
+        <View style={styles.chartWrapper}>
+          <PureChart data={pulsoData} type="bar" height={200} width={Dimensions.get('window').width * 1.5} />
         </View>
       </ScrollView>
 
@@ -216,10 +214,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginTop: 30,
   },
-  parachart: {
-    width: Dimensions.get('window').width - 40, // Limita el ancho del contenedor del gráfico al ancho de la pantalla menos el padding
-    alignSelf: 'center',
-
+  chartWrapper: {
+    width: Dimensions.get('window').width * 1.5,
   },
 });
 
