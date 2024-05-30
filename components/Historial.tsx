@@ -1,7 +1,6 @@
-// components/Historial.tsx
-
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, Dimensions, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, Image, ActivityIndicator, Alert } from 'react-native';
+import axios from 'axios';
 
 interface Registro {
   fecha: string;
@@ -10,15 +9,38 @@ interface Registro {
   oxigeno: number;
 }
 
-const historialData: Registro[] = [
-  { fecha: '25/02/2024', hora: '5:35', latidos: 89, oxigeno: 92 },
-  { fecha: '24/02/2024', hora: '21:23', latidos: 85, oxigeno: 94 },
-  { fecha: '23/02/2024', hora: '14:15', latidos: 88, oxigeno: 91 },
-  { fecha: '22/02/2024', hora: '9:45', latidos: 90, oxigeno: 93 },
-  // Agrega más datos temporales aquí
-];
-
 const Historial = (): React.JSX.Element => {
+  const [historialData, setHistorialData] = useState<Registro[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/EstadosDeSalud');
+        const data = response.data;
+
+        const formattedData = data.map((entry: any) => {
+          const date = new Date(entry.fecha_hora);
+          return {
+            fecha: date.toLocaleDateString(),
+            hora: date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            latidos: entry.pulso_cardiaco,
+            oxigeno: entry.nivel_oxigeno,
+          };
+        });
+
+        setHistorialData(formattedData);
+      } catch (error) {
+        console.error('Error fetching data', error);
+        Alert.alert('Error', 'Error fetching data from server');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const renderItem = ({ item }: { item: Registro }) => (
     <View style={styles.listItem}>
       <View style={styles.header}>
@@ -29,10 +51,18 @@ const Historial = (): React.JSX.Element => {
     </View>
   );
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.alarmHeader}>
-        <Image source={require('../imagenes/his.png')}  style={styles.alarmIcon} />
+        <Image source={require('../imagenes/his.png')} style={styles.alarmIcon} />
         <Text style={styles.alarmText}>Historial</Text>
       </View>
       <FlatList
@@ -103,6 +133,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#34CC91',
     fontWeight: 'bold',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
