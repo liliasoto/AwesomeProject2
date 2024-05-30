@@ -1,31 +1,68 @@
-// components/IngresarDatos.tsx
-
 import React, { useState } from 'react';
 import { Alert, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, Image, TouchableOpacity, useColorScheme } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../App';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import axios from 'axios';
 
 type StartProps = {
     navigation: StackNavigationProp<RootStackParamList, 'Home'>;
 };
-
-
 
 function IngresarDatos({ navigation }: StartProps): React.JSX.Element {
     const [nivelOx, setNivelOx] = useState('');
     const [pulCar, setPulCar] = useState('');
     const isDarkMode = useColorScheme() === 'dark';
 
-    const btnIrAHome = () => {
-        Alert.alert('Datos guardados');
-        navigation.navigate('Home');
-    }
+    const btnIrAHome = async () => {
+        if (!nivelOx || !pulCar) {
+            Alert.alert('Error', 'Por favor, complete todos los campos');
+            return;
+        }
+
+        const nivelOxParsed = parseFloat(nivelOx); 
+        const pulCarParsed = parseFloat(pulCar);
+
+        if (isNaN(nivelOxParsed) || isNaN(pulCarParsed)) {
+            Alert.alert('Error', 'Por favor, ingrese valores numéricos válidos');
+            return;
+        }
+
+        try {
+            const response = await axios.post('http://localhost:3000/EstadosDeSalud', {
+                nivel_oxigeno: nivelOxParsed,
+                pulso_cardiaco: pulCarParsed,
+                fecha_hora: new Date().toISOString(),
+            });
+
+            if (response.status === 201 || response.status === 200) {
+                Alert.alert('Datos guardados');
+                navigation.navigate('Home');
+            } else {
+                console.error('Error response status:', response.status);
+                Alert.alert('Error', `No se pudieron guardar los datos: ${response.statusText}`);
+            }
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                console.error('Axios error message:', error.message);
+                if (error.response) {
+                    console.error('Error response data:', error.response.data);
+                    console.error('Error response status:', error.response.status);
+                    Alert.alert('Error', `Error al enviar los datos al servidor: ${error.response.statusText}`);
+                } else {
+                    Alert.alert('Error', `Error al enviar los datos al servidor: ${error.message}`);
+                }
+            } else {
+                console.error('Unknown error:', error);
+                Alert.alert('Error', 'Error desconocido al enviar los datos al servidor');
+            }
+        }
+    };
 
     const backgroundStyle = {
         backgroundColor: isDarkMode ? Colors.darker : Colors.white,
         flex: 1,
-      };
+    };
 
     return (
         <SafeAreaView style={backgroundStyle}>
@@ -42,13 +79,17 @@ function IngresarDatos({ navigation }: StartProps): React.JSX.Element {
                         <TextInput
                             placeholder="Ingrese el porcentaje"
                             style={styles.input}
+                            keyboardType="numeric"
                             onChangeText={p => setNivelOx(p)}
+                            value={nivelOx}
                         />
                         <Text style={styles.greetingText}>Pulso cardiaco</Text>
                         <TextInput
                             placeholder="Ingrese los latidos por minuto"
                             style={styles.input}
+                            keyboardType="numeric"
                             onChangeText={p => setPulCar(p)}
+                            value={pulCar}
                         />
                     </View>
                     <View style={styles.buttonContainer}>

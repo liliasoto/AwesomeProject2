@@ -41,13 +41,13 @@ function EstadoDeSalud({ navigation }: StartProps): React.JSX.Element {
         const latestData = data.slice(0, 5);
 
         const oxigeno = latestData.map((entry) => ({
-          x: new Date(entry.fecha_hora).toLocaleString('default', { month: 'short', day: 'numeric' }), // Se puede ajustar el formato de la fecha
-          y: entry.nivel_oxigeno,
+          x: new Date(entry.fecha_hora).getDate().toString(), // Obtener solo el día del mes
+          y: parseFloat(entry.nivel_oxigeno.toFixed(2)), // Asegurando que los valores son decimales
         }));
 
         const pulso = latestData.map((entry) => ({
-          x: new Date(entry.fecha_hora).toLocaleString('default', { month: 'short', day: 'numeric' }),
-          y: entry.pulso_cardiaco,
+          x: new Date(entry.fecha_hora).getDate().toString(), // Obtener solo el día del mes
+          y: parseFloat(entry.pulso_cardiaco.toFixed(2)), // Asegurando que los valores son decimales
         }));
 
         setOxigenoData([{ seriesName: 'Niveles de Oxígeno', data: oxigeno, color: '#34CC91' }]);
@@ -160,7 +160,6 @@ function EstadoDeSalud({ navigation }: StartProps): React.JSX.Element {
     </ScrollView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
