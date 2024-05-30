@@ -1,7 +1,8 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, ActivityIndicator, Alert } from 'react-native';
 import Svg, { Circle, G, Text as SvgText } from 'react-native-svg';
 import PureChart from 'react-native-pure-chart';
+import axios from 'axios';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../App';
 
@@ -9,51 +10,61 @@ type StartProps = {
   navigation: StackNavigationProp<RootStackParamList, 'Home'>;
 };
 
+interface EstadoSaludEntry {
+  id: number;
+  nivel_oxigeno: number;
+  pulso_cardiaco: number;
+  fecha_hora: string;
+}
+
+interface ChartData {
+  seriesName: string;
+  data: { x: string; y: number }[];
+  color: string;
+}
+
 function EstadoDeSalud({ navigation }: StartProps): React.JSX.Element {
+  const [oxigenoData, setOxigenoData] = useState<ChartData[]>([]);
+  const [pulsoData, setPulsoData] = useState<ChartData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/EstadosDeSalud');
+        let data: EstadoSaludEntry[] = response.data;
+
+        // Ordenar los datos por fecha en orden descendente
+        data = data.sort((a, b) => new Date(b.fecha_hora).getTime() - new Date(a.fecha_hora).getTime());
+
+        // Tomar los últimos 5 registros
+        const latestData = data.slice(0, 5);
+
+        const oxigeno = latestData.map((entry) => ({
+          x: new Date(entry.fecha_hora).toLocaleString('default', { month: 'short', day: 'numeric' }), // Se puede ajustar el formato de la fecha
+          y: entry.nivel_oxigeno,
+        }));
+
+        const pulso = latestData.map((entry) => ({
+          x: new Date(entry.fecha_hora).toLocaleString('default', { month: 'short', day: 'numeric' }),
+          y: entry.pulso_cardiaco,
+        }));
+
+        setOxigenoData([{ seriesName: 'Niveles de Oxígeno', data: oxigeno, color: '#34CC91' }]);
+        setPulsoData([{ seriesName: 'Pulso Cardiaco', data: pulso, color: '#FF0000' }]);
+      } catch (error) {
+        console.error('Error fetching data', error);
+        Alert.alert('Error', 'Error fetching data from server');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const healthPercentage = 86;
   const riskPercentage = 10;
-
-  const oxigenoData = [
-    {
-      seriesName: 'Niveles de Oxígeno',
-      data: [
-        { x: 'Enero', y: 98 },
-        { x: 'Febrero', y: 96 },
-        { x: 'Marzo', y: 95 },
-        { x: 'Abril', y: 97 },
-        { x: 'Mayo', y: 99 },
-        { x: 'Junio', y: 96 },
-        { x: 'Julio', y: 97 },
-        { x: 'Agosto', y: 98 },
-        { x: 'Septiembre', y: 96 },
-        { x: 'Octubre', y: 97 },
-        { x: 'Noviembre', y: 98 },
-        { x: 'Diciembre', y: 99 },
-      ],
-      color: '#34CC91',
-    },
-  ];
-
-  const pulsoData = [
-    {
-      seriesName: 'Pulso Cardiaco',
-      data: [
-        { x: 'Enero', y: 72 },
-        { x: 'Febrero', y: 75 },
-        { x: 'Marzo', y: 70 },
-        { x: 'Abril', y: 73 },
-        { x: 'Mayo', y: 74 },
-        { x: 'Junio', y: 72 },
-        { x: 'Julio', y: 71 },
-        { x: 'Agosto', y: 75 },
-        { x: 'Septiembre', y: 72 },
-        { x: 'Octubre', y: 74 },
-        { x: 'Noviembre', y: 73 },
-        { x: 'Diciembre', y: 71 },
-      ],
-      color: '#FF0000',
-    },
-  ];
 
   const irADetalles = async () => {
     navigation.navigate('Historial');
@@ -90,6 +101,14 @@ function EstadoDeSalud({ navigation }: StartProps): React.JSX.Element {
       </Svg>
     </View>
   );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -140,7 +159,7 @@ function EstadoDeSalud({ navigation }: StartProps): React.JSX.Element {
       <View style={styles.flexibleSpace}></View>
     </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -216,6 +235,11 @@ const styles = StyleSheet.create({
   },
   chartWrapper: {
     width: Dimensions.get('window').width * 1.5,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
