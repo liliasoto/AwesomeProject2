@@ -1,9 +1,15 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Dimensions, Image } from 'react-native';
 import Modal from 'react-native-modal';
+import { RootStackParamList } from '../App';
+
+type StartProps = {
+  navigation: StackNavigationProp<RootStackParamList, 'Home'>;
+};
 
 
-const Yo = (): React.JSX.Element => {
+function Yo({ navigation }: StartProps): React.JSX.Element {
   const [isModalVisible, setModalVisible] = useState(false);
   const [peso, setPeso] = useState('');
 
@@ -15,6 +21,10 @@ const Yo = (): React.JSX.Element => {
     // Aquí puedes manejar el nuevo peso introducido
     console.log(`Nuevo peso: ${peso} kg`);
     setModalVisible(false);
+  };
+
+  const irAStart = async () => {
+    navigation.navigate('Start');
   };
 
   return (
@@ -49,7 +59,7 @@ const Yo = (): React.JSX.Element => {
       <View style={styles.flexibleSpace} />
 
       <TouchableOpacity style={styles.logoutContainer}>
-        <Text style={styles.logoutText}>Cerrar sesión  </Text>
+        <Text style={styles.logoutText} onPress={irAStart}>Cerrar sesión  </Text>
         <Image source={require('../imagenes/logouticon.png')}  style={styles.logoutIcon} />
       </TouchableOpacity>
     </View>

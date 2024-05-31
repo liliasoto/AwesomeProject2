@@ -29,7 +29,7 @@ const Historial = (): React.JSX.Element => {
           };
         });
 
-        setHistorialData(formattedData);
+        setHistorialData(formattedData.reverse());
       } catch (error) {
         console.error('Error fetching data', error);
         Alert.alert('Error', 'Error fetching data from server');
@@ -74,7 +74,6 @@ const Historial = (): React.JSX.Element => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
