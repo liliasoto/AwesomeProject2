@@ -1,79 +1,65 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# VitalCheck
 
-# Getting Started
+VitalCheck es una aplicación móvil diseñada para el seguimiento de la salud en base al pulso cardiaco y los niveles de oxígeno. La aplicación permite a los usuarios registrar y visualizar sus datos de salud, proporcionando un historial detallado y visualizaciones gráficas para un mejor entendimiento de su estado físico.
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## Características
 
-## Step 1: Start the Metro Server
+- Registro de niveles de oxígeno y pulso cardiaco.
+- Visualización de datos históricos con gráficos.
+- Alertas sobre el estado de salud.
+- Conexión con doctores y seres queridos.
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+## Instalación y ejecución
 
-To start Metro, run the following command from the _root_ of your React Native project:
+Para ejecutar la aplicación móvil VitalCheck, sigue estos pasos:
 
-```bash
-# using npm
-npm start
+### Requisitos previos
 
-# OR using Yarn
-yarn start
-```
+- Node.js instalado en tu sistema.
+- Un emulador de Android configurado y ejecutándose.
 
-## Step 2: Start your Application
+### Pasos
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+1. Clona el repositorio:
 
-### For Android
+    ```bash
+    git clone https://github.com/liliasoto/AwesomeProject2
+    ```
 
-```bash
-# using npm
-npm run android
+2. Navega al directorio del proyecto:
 
-# OR using Yarn
-yarn android
-```
+    ```bash
+    cd AwesomeProject2
+    ```
 
-### For iOS
+3. Instala las dependencias:
 
-```bash
-# using npm
-npm run ios
+    ```bash
+    npm install
+    ```
 
-# OR using Yarn
-yarn ios
-```
+4. Inicia la aplicación:
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+    ```bash
+    npm start
+    ```
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+5. Aparecerán 4 opciones en la consola. Elige la opción `a` para Android:
 
-## Step 3: Modifying your App
+    ```bash
+    › Press a │ open Android
+    ```
 
-Now that you have successfully run the app, let's modify it.
+Asegúrate de tener un emulador de Android abierto antes de seleccionar la opción `a`.
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+## Backend
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+VitalCheck utiliza un Web Service para manejar los datos del usuario. El repositorio del backend está disponible en:
 
-## Congratulations! :tada:
+[Repositorio del Web Service](https://github.com/liliasoto/node-sql-api)
 
-You've successfully run and modified your React Native App. :partying_face:
+En el README del repositorio del backend, encontrarás las instrucciones de instalación y configuración necesarias para poner en funcionamiento el servicio.
 
-### Now what?
+---
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+Esperamos que encuentres útil esta aplicación para el seguimiento de tu salud. ¡Gracias por usar VitalCheck!
