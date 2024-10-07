@@ -23,7 +23,7 @@ function SignUp({navigation}: StartProps): React.JSX.Element {
     };
 
     const irASignIn = function () {
-      navigation.navigate('CambiarCuenta');
+      navigation.navigate('Start');
       return;
   };
     

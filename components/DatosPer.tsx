@@ -25,7 +25,7 @@ function DatosPer({ navigation }: StartProps): React.JSX.Element {
 
     const btnIngresarDatos = () => {
         Alert.alert('Datos ingresados', 'Cuenta creada con éxito!!!');
-        navigation.navigate('CambiarCuenta');
+        navigation.navigate('Start');
     };
 
     const handleGeneroChange = (value: string) => {

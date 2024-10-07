@@ -57,10 +57,16 @@ function App(): React.JSX.Element {
           <Stack.Screen 
             name="Home" 
             component={Home} 
+            options={{
+              headerShown: false,
+            }}
           />
           <Stack.Screen
             name="SignUp"
             component={SignUp}
+            options={{
+              headerShown: false,
+            }}
           />
           <Stack.Screen
             name="CambiarCuenta"
@@ -69,10 +75,16 @@ function App(): React.JSX.Element {
           <Stack.Screen
             name="DatosPer"
             component={DatosPer}
+            options={{
+              title: ""
+            }}
           />
           <Stack.Screen
             name="IngresarDatos"
             component={IngresarDatos}
+            options={{
+              title: "Ingrese sus datos"
+            }}
           />
           <Stack.Screen
             name="Contactos"
@@ -81,14 +93,23 @@ function App(): React.JSX.Element {
           <Stack.Screen
             name="Mensaje"
             component={Mensaje}
+            options={{
+              title: ""
+            }}
           />
           <Stack.Screen
             name="Alarmas"
             component={Alarmas}
+            options={{
+              title: ""
+            }}
           />
           <Stack.Screen
             name="EstadoDeSalud"
             component={EstadoDeSalud}
+            options={{
+              title: ""
+            }}
           />
           <Stack.Screen
             name="Historial"
