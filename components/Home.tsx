@@ -46,7 +46,7 @@ function Home({navigation}: StartProps): React.JSX.Element {
           <View style={{ backgroundColor: isDarkMode ? Colors.black : Colors.white, flex: 1 }}>
             <TouchableOpacity style={styles.buttonUser} onPress={irMenu}>
               <Image
-                source={require('../imagenes/image.png')} // Ruta corregida
+                source={require('../imagenes/usuariodef.png')} // Ruta corregida
                 style={styles.image}
               />
             </TouchableOpacity>

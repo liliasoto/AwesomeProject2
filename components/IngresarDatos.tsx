@@ -78,7 +78,7 @@ function IngresarDatos({ navigation }: StartProps): React.JSX.Element {
                         <Text style={styles.greetingText}>Niveles de oxígeno</Text>
                         <TextInput
                             placeholder="Ingrese el porcentaje"
-                            style={styles.input}
+                            style={styles.inputdos}
                             keyboardType="numeric"
                             onChangeText={p => setNivelOx(p)}
                             value={nivelOx}
@@ -86,7 +86,7 @@ function IngresarDatos({ navigation }: StartProps): React.JSX.Element {
                         <Text style={styles.greetingText}>Pulso cardiaco</Text>
                         <TextInput
                             placeholder="Ingrese los latidos por minuto"
-                            style={styles.input}
+                            style={styles.inputdos}
                             keyboardType="numeric"
                             onChangeText={p => setPulCar(p)}
                             value={pulCar}
@@ -133,6 +133,17 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         borderRadius: 5,
         backgroundColor: '#fff',
+    },
+    inputdos: {
+        width: 220,
+        height: 40,
+        borderColor: '#818181',
+        borderWidth: 1,
+        paddingHorizontal: 10,
+        marginBottom: 20,
+        borderRadius: 5,
+        backgroundColor: '#fff',
+        textAlign: 'center',
     },
     buttonContainer: {
         width: '100%',
