@@ -5,6 +5,7 @@ import PureChart from 'react-native-pure-chart';
 import axios from 'axios';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../App';
+import { useUser } from '../components/UserContext';
 
 type StartProps = {
   navigation: StackNavigationProp<RootStackParamList, 'Home'>;
@@ -24,30 +25,37 @@ interface ChartData {
 }
 
 function EstadoDeSalud({ navigation }: StartProps): React.JSX.Element {
+  const { userId } = useUser(); // Use the user ID from context
   const [oxigenoData, setOxigenoData] = useState<ChartData[]>([]);
   const [pulsoData, setPulsoData] = useState<ChartData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
+      if (userId === null) {
+        Alert.alert('Error', 'User ID is not available');
+        return;
+      }
+
       try {
-        const response = await axios.get('http://localhost:3000/EstadosDeSalud');
+        console.log('User ID:', userId); // Log the userId before making the request
+        const response = await axios.get(`http://localhost:3000/mediciones/usuario/${userId}`);
         let data: EstadoSaludEntry[] = response.data;
 
-        // Ordenar los datos por fecha en orden descendente
+        // Sort data by date in descending order
         data = data.sort((a, b) => new Date(b.fecha_hora).getTime() - new Date(a.fecha_hora).getTime());
 
-        // Tomar los últimos 5 registros
+        // Get the latest 5 records
         const latestData = data.slice(0, 5);
 
         const oxigeno = latestData.map((entry) => ({
-          x: new Date(entry.fecha_hora).getDate().toString(), // Obtener solo el día del mes
-          y: parseFloat(entry.nivel_oxigeno.toFixed(2)), // Asegurando que los valores son decimales
+          x: new Date(entry.fecha_hora).getDate().toString(),
+          y: parseFloat(entry.nivel_oxigeno.toFixed(2)),
         }));
 
         const pulso = latestData.map((entry) => ({
-          x: new Date(entry.fecha_hora).getDate().toString(), // Obtener solo el día del mes
-          y: parseFloat(entry.pulso_cardiaco.toFixed(2)), // Asegurando que los valores son decimales
+          x: new Date(entry.fecha_hora).getDate().toString(),
+          y: parseFloat(entry.pulso_cardiaco.toFixed(2)),
         }));
 
         setOxigenoData([{ seriesName: 'Niveles de Oxígeno', data: oxigeno, color: '#34CC91' }]);
@@ -61,7 +69,7 @@ function EstadoDeSalud({ navigation }: StartProps): React.JSX.Element {
     };
 
     fetchData();
-  }, []);
+  }, [userId]); // Dependency on userId
 
   const healthPercentage = 86;
   const riskPercentage = 10;

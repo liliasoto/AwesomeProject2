@@ -4,6 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { Alert, SafeAreaView, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View, Image, useColorScheme, TextInput, Button, Text } from 'react-native';
 import { RootStackParamList } from '../App';
+import { useUser } from '../components/UserContext';
 
 type StartProps = {
     navigation: StackNavigationProp<RootStackParamList, 'Home'>;
@@ -12,6 +13,7 @@ type StartProps = {
 function Start({navigation}: StartProps): React.JSX.Element {
     const [contraseña, setContraseña] = useState('');
     const [nombreUsuario, setNombreUsuario] = useState('');
+    const { setUserId } = useUser();
 
     const btnIngresarOnPress = async () => {
       try {
@@ -27,9 +29,15 @@ function Start({navigation}: StartProps): React.JSX.Element {
           });
   
           const data = await response.json();
+          console.log('Response data:', data); // Add this line
   
           if (response.ok) {
-              // Si la autenticación es exitosa
+              // Extraemos el ID del objeto
+              const userId = data.usuario.id; // Cambiamos aquí
+              console.log('User ID set to:', userId); // Logqear el user ID
+
+              // Guardar el id en el contexto
+              setUserId(userId); // Usar lo extraido user ID
               navigation.navigate('Home');
           } else {
               Alert.alert('Error', data.message);

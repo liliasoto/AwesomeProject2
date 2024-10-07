@@ -13,6 +13,7 @@ import Alarmas from './components/Alarmas';
 import EstadoDeSalud from './components/EstadoDeSalud';
 import Historial from './components/Historial';
 import Yo from './components/Yo';
+import { UserProvider } from './components/UserContext'; 
 
 type Contacto = {
   id: string;
@@ -43,61 +44,63 @@ const Stack = createStackNavigator<RootStackParamList>();
 function App(): React.JSX.Element {
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName='Start'>
-        <Stack.Screen 
-          name="Start" 
-          component={Start}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen 
-          name="Home" 
-          component={Home} 
-        />
-        <Stack.Screen
-          name="SignUp"
-          component={SignUp}
-        />
-        <Stack.Screen
-          name="CambiarCuenta"
-          component={CambiarCuenta}
-        />
-        <Stack.Screen
-          name="DatosPer"
-          component={DatosPer}
-        />
-        <Stack.Screen
-          name="IngresarDatos"
-          component={IngresarDatos}
-        />
-        <Stack.Screen
-          name="Contactos"
-          component={Contactos}
-        />
-        <Stack.Screen
-          name="Mensaje"
-          component={Mensaje}
-        />
-        <Stack.Screen
-          name="Alarmas"
-          component={Alarmas}
-        />
-        <Stack.Screen
-          name="EstadoDeSalud"
-          component={EstadoDeSalud}
-        />
-        <Stack.Screen
-          name="Historial"
-          component={Historial}
-        />
-        <Stack.Screen
-          name="Yo"
-          component={Yo}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <UserProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName='Start'>
+          <Stack.Screen 
+            name="Start" 
+            component={Start}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen 
+            name="Home" 
+            component={Home} 
+          />
+          <Stack.Screen
+            name="SignUp"
+            component={SignUp}
+          />
+          <Stack.Screen
+            name="CambiarCuenta"
+            component={CambiarCuenta}
+          />
+          <Stack.Screen
+            name="DatosPer"
+            component={DatosPer}
+          />
+          <Stack.Screen
+            name="IngresarDatos"
+            component={IngresarDatos}
+          />
+          <Stack.Screen
+            name="Contactos"
+            component={Contactos}
+          />
+          <Stack.Screen
+            name="Mensaje"
+            component={Mensaje}
+          />
+          <Stack.Screen
+            name="Alarmas"
+            component={Alarmas}
+          />
+          <Stack.Screen
+            name="EstadoDeSalud"
+            component={EstadoDeSalud}
+          />
+          <Stack.Screen
+            name="Historial"
+            component={Historial}
+          />
+          <Stack.Screen
+            name="Yo"
+            component={Yo}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </UserProvider>
   );
 }
 
