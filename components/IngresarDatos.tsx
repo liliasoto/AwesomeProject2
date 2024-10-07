@@ -4,6 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../App';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import axios from 'axios';
+import { useUser } from '../components/UserContext'; // Asegúrate de importar tu contexto
 
 type StartProps = {
     navigation: StackNavigationProp<RootStackParamList, 'Home'>;
@@ -13,6 +14,7 @@ function IngresarDatos({ navigation }: StartProps): React.JSX.Element {
     const [nivelOx, setNivelOx] = useState('');
     const [pulCar, setPulCar] = useState('');
     const isDarkMode = useColorScheme() === 'dark';
+    const { userId } = useUser(); // Use the user ID from context
 
     const btnIrAHome = async () => {
         if (!nivelOx || !pulCar) {
@@ -29,10 +31,11 @@ function IngresarDatos({ navigation }: StartProps): React.JSX.Element {
         }
 
         try {
-            const response = await axios.post('http://localhost:3000/EstadosDeSalud', {
+            const response = await axios.post('http://localhost:3000/mediciones', {
                 nivel_oxigeno: nivelOxParsed,
                 pulso_cardiaco: pulCarParsed,
                 fecha_hora: new Date().toISOString(),
+                usuario_id: userId, // Incluye el ID del usuario actual
             });
 
             if (response.status === 201 || response.status === 200) {
