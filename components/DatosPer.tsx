@@ -5,17 +5,24 @@ import React, { useState } from 'react';
 import { Alert, SafeAreaView, ScrollView, StyleSheet, View, TextInput, Button, Text, TouchableOpacity, Platform } from 'react-native';
 import { RootStackParamList } from '../App';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { RouteProp, useRoute } from '@react-navigation/native';
 
+type DatosPerRouteProp = RouteProp<RootStackParamList, 'DatosPer'>;
 
 type StartProps = {
     navigation: StackNavigationProp<RootStackParamList, 'SignUp'>;
+    route: DatosPerRouteProp; // Aquí le dpy el tipo correcto a la ruta
 };
 
-function DatosPer({ navigation }: StartProps): React.JSX.Element {
+function DatosPer({ navigation, route }: StartProps): React.JSX.Element {
+    // Usar params de route
+    const { usuario, correo, contraseña } = route.params || {};
+
     const [fechaNacimiento, setFechaNacimiento] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [genero, setGenero] = useState('');
     const [peso, setPeso] = useState('');
+
 
     const onChangeFecha = (event: any, selectedDate: any) => {
         const currentDate = selectedDate || fechaNacimiento;
@@ -23,9 +30,39 @@ function DatosPer({ navigation }: StartProps): React.JSX.Element {
         setFechaNacimiento(currentDate);
     };
 
-    const btnIngresarDatos = () => {
-        Alert.alert('Datos ingresados', 'Cuenta creada con éxito!!!');
-        navigation.navigate('Start');
+    const btnIngresarDatos = async () => {
+        try {
+            // Crear el objeto de datos para enviar a la API
+            const datosUsuario = {
+                nombre_usuario: usuario,
+                correo,
+                contraseña,
+                fecha_nacimiento: fechaNacimiento.toISOString(), // Convierte la fecha a formato ISO
+                genero,
+                peso
+            };
+
+            // Llamada a la API para registrar al usuario
+            const response = await fetch('http://localhost:3000/usuarios', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datosUsuario)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                Alert.alert('Datos ingresados', 'Cuenta creada con éxito!!!');
+                navigation.navigate('Start');
+            } else {
+                Alert.alert('Error', result.message || 'Hubo un error al crear la cuenta');
+            }
+        } catch (error) {
+            console.error(error);
+            Alert.alert('Error', 'Hubo un problema al conectar con el servidor.');
+        }
     };
 
     const handleGeneroChange = (value: string) => {
@@ -61,16 +98,16 @@ function DatosPer({ navigation }: StartProps): React.JSX.Element {
                     <View style={styles.radioContainer}>
                         <TouchableOpacity
                             style={styles.radioButton}
-                            onPress={() => handleGeneroChange('femenino')}
+                            onPress={() => handleGeneroChange('Femenino')}
                         >
-                            <View style={genero === 'femenino' ? styles.radioButtonSelected : styles.radioButtonUnselected} />
+                            <View style={genero === 'Femenino' ? styles.radioButtonSelected : styles.radioButtonUnselected} />
                             <Text style={styles.radioLabel}>Femenino</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.radioButton}
-                            onPress={() => handleGeneroChange('masculino')}
+                            onPress={() => handleGeneroChange('Masculino')}
                         >
-                            <View style={genero === 'masculino' ? styles.radioButtonSelected : styles.radioButtonUnselected} />
+                            <View style={genero === 'Masculino' ? styles.radioButtonSelected : styles.radioButtonUnselected} />
                             <Text style={styles.radioLabel}>Masculino</Text>
                         </TouchableOpacity>
                     </View>

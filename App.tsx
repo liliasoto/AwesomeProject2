@@ -28,7 +28,7 @@ export type RootStackParamList = {
   Start: undefined;
   SignUp: undefined;
   CambiarCuenta: undefined;
-  DatosPer: undefined;
+  DatosPer: { usuario: string; correo: string; contraseña: string };
   IngresarDatos: undefined;
   Contactos: undefined;
   Mensaje: { contacto: Contacto };

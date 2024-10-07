@@ -29,6 +29,7 @@ function EstadoDeSalud({ navigation }: StartProps): React.JSX.Element {
   const [oxigenoData, setOxigenoData] = useState<ChartData[]>([]);
   const [pulsoData, setPulsoData] = useState<ChartData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasEnoughData, setHasEnoughData] = useState(true); // New state for checking data availability
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,6 +49,12 @@ function EstadoDeSalud({ navigation }: StartProps): React.JSX.Element {
         // Get the latest 5 records
         const latestData = data.slice(0, 5);
 
+        // Check if there are at least 5 measurements
+        if (latestData.length < 5) {
+          setHasEnoughData(false);
+          return; // Return early if not enough data
+        }
+
         const oxigeno = latestData.map((entry) => ({
           x: new Date(entry.fecha_hora).getDate().toString(),
           y: parseFloat(entry.nivel_oxigeno.toFixed(2)),
@@ -61,8 +68,13 @@ function EstadoDeSalud({ navigation }: StartProps): React.JSX.Element {
         setOxigenoData([{ seriesName: 'Niveles de Oxígeno', data: oxigeno, color: '#34CC91' }]);
         setPulsoData([{ seriesName: 'Pulso Cardiaco', data: pulso, color: '#FF0000' }]);
       } catch (error) {
-        console.error('Error fetching data', error);
-        Alert.alert('Error', 'Error fetching data from server');
+        // Check if the error is a 404 response
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+          setHasEnoughData(false);
+        } else {
+          console.error('Error fetching data', error);
+          Alert.alert('Error', 'Error fetching data from server');
+        }
       } finally {
         setLoading(false);
       }
@@ -142,9 +154,13 @@ function EstadoDeSalud({ navigation }: StartProps): React.JSX.Element {
         </View>
       </View>
       <ScrollView horizontal>
-        <View style={styles.chartWrapper}>
-          <PureChart data={oxigenoData} type="bar" height={200} width={Dimensions.get('window').width * 1.5} />
-        </View>
+        {hasEnoughData ? (
+          <View style={styles.chartWrapper}>
+            <PureChart data={oxigenoData} type="bar" height={200} width={Dimensions.get('window').width * 1.5} />
+          </View>
+        ) : (
+          <Text style={styles.noDataText}>Aún no tienes mediciones suficientes para crear una gráfica.</Text>
+        )}
       </ScrollView>
 
       <View style={styles.sectionHeader2}>
@@ -155,9 +171,13 @@ function EstadoDeSalud({ navigation }: StartProps): React.JSX.Element {
         </View>
       </View>
       <ScrollView horizontal>
-        <View style={styles.chartWrapper}>
-          <PureChart data={pulsoData} type="bar" height={200} width={Dimensions.get('window').width * 1.5} />
-        </View>
+        {hasEnoughData ? (
+          <View style={styles.chartWrapper}>
+            <PureChart data={pulsoData} type="bar" height={200} width={Dimensions.get('window').width * 1.5} />
+          </View>
+        ) : (
+          <Text style={styles.noDataText}>Aún no tienes mediciones suficientes para crear una gráfica.</Text>
+        )}
       </ScrollView>
 
       <View style={styles.flexibleSpace}></View>
@@ -248,6 +268,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  noDataText: {
+    fontSize: 16,
+    color: '#818181',
+    textAlign: 'center',
+    margin: 20,
+  }
 });
 
 export default EstadoDeSalud;

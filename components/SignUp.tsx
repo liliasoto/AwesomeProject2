@@ -18,7 +18,7 @@ function SignUp({navigation}: StartProps): React.JSX.Element {
 
   const btnIrADatosPersonales = function () {
         Alert.alert('Ahora ingresa tus datos personales')
-        navigation.navigate('DatosPer');
+        navigation.navigate('DatosPer', { usuario, correo, contraseña });
         return;
     };
 
