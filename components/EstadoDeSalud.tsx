@@ -93,7 +93,7 @@ function EstadoDeSalud({ navigation }: StartProps): React.JSX.Element {
         */
         
         // Get the latest 5 records
-        const latest5Data = data.slice(0, 5);
+        const latest5Data = data.slice(0, 5).reverse();;
 
         // Check if there are at least 5 measurements
         if (latest5Data.length < 5) {
