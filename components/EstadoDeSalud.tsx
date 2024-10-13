@@ -6,6 +6,8 @@ import axios from 'axios';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../App';
 import { useUser } from '../components/UserContext';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+
 
 type StartProps = {
   navigation: StackNavigationProp<RootStackParamList, 'Home'>;
@@ -24,6 +26,7 @@ interface ChartData {
   color: string;
 }
 
+
 function EstadoDeSalud({ navigation }: StartProps): React.JSX.Element {
   const { userId } = useUser(); // Use the user ID from context
   const [oxigenoData, setOxigenoData] = useState<ChartData[]>([]);
@@ -32,7 +35,7 @@ function EstadoDeSalud({ navigation }: StartProps): React.JSX.Element {
   const [hasEnoughData, setHasEnoughData] = useState(true); // New state for checking data availability
   const [healthPercentage, setHealthPercentage] = useState(0); // Update state for health percentage
   const [riskPercentage, setRiskPercentage] = useState(0); // Update state for risk percentage
-
+  const [pdfFilePath, setPdfFilePath] = useState('');
   //___________________________//
   // Helper function to calculate age from birthdate
   const calculateAge = (birthdate: string): number => {
@@ -223,6 +226,13 @@ function EstadoDeSalud({ navigation }: StartProps): React.JSX.Element {
       </View>
     );
   }
+
+  //IPDF_______________//
+  // Function to generate PDF
+  const generatePDF = async () => {
+      
+  };
+  //FPDF_______________//
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
