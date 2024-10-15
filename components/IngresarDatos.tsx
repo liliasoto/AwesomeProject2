@@ -5,6 +5,7 @@ import { RootStackParamList } from '../App';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import axios from 'axios';
 import { useUser } from '../components/UserContext'; // Asegúrate de importar tu contexto
+import FastImage from 'react-native-fast-image';
 
 type StartProps = {
     navigation: StackNavigationProp<RootStackParamList, 'Home'>;
@@ -72,9 +73,10 @@ function IngresarDatos({ navigation }: StartProps): React.JSX.Element {
             <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={styles.scrollViewContent}>
                 <View style={{ flex: 1, alignItems: 'center' }}>
                     <View style={styles.buttonCor}>
-                        <Image 
-                            source={require('../imagenes/Heart.png')}
+                        <FastImage
+                            source={require('../imagenes/h.gif')}
                             style={styles.image}
+                            resizeMode={FastImage.resizeMode.contain}
                         />
                     </View>
                     <View style={styles.formContainer}>

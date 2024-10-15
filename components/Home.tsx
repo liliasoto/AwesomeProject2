@@ -3,6 +3,8 @@ import React from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View, Image, useColorScheme, Text } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { RootStackParamList } from '../App';
+import FastImage from 'react-native-fast-image';
+
 
 type StartProps = {
   navigation: StackNavigationProp<RootStackParamList, 'Start'>;
@@ -52,10 +54,10 @@ function Home({navigation}: StartProps): React.JSX.Element {
             </TouchableOpacity>
             <View style={styles.centerContainer}>
               <TouchableOpacity style={styles.buttonCor} onPress={irTomarMedicion}>
-                <Image
-                  source={require('../imagenes/Heart.png')} // Ruta corregida
-                  style={styles.image}
-                />
+              <FastImage
+                source={require('../imagenes/h.gif')}
+                style={styles.image}
+              />
               </TouchableOpacity>
             </View>
             <Text style={styles.greetingText}>Tomar medición</Text>
