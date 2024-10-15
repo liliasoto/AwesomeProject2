@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, ActivityIndicator, Alert } from 'react-native';
 import axios from 'axios';
+import { useUser } from '../components/UserContext';
 
 interface Registro {
   fecha: string;
@@ -10,13 +11,20 @@ interface Registro {
 }
 
 const Historial = (): React.JSX.Element => {
+  const { userId } = useUser(); // Use the user ID from context
   const [historialData, setHistorialData] = useState<Registro[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
+      if (userId === null) {
+        Alert.alert('Error', 'User ID is not available');
+        return;
+      }
+
       try {
-        const response = await axios.get('http://localhost:3000/EstadosDeSalud');
+        console.log('User ID:', userId); // Log the userId before making the request
+        const response = await axios.get(`http://localhost:3000/mediciones/usuario/${userId}`);
         const data = response.data;
 
         const formattedData = data.map((entry: any) => {
