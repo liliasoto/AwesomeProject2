@@ -1,8 +1,9 @@
 import { StackNavigationProp } from "@react-navigation/stack";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, Button, View, Alert } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 
 const styles = StyleSheet.create({
     screen: {
@@ -47,12 +48,15 @@ function  Login({navigation}: LoginProps): React.JSX.Element {
     const [contraseña, setContraseña] = useState('');
 
     const btnIngresarOnPress = function () {
-        if (usuario && contraseña){
+        if (usuario && contraseña) {
             navigation.navigate('Home');
-            return;
+            setUsuario('');         // Limpiar usuario
+            setContraseña('');      // Limpiar contraseña
+        } else {
+            Alert.alert('Fallido', 'Datos incorrectos');
         }
-        Alert.alert('Fallido', 'Datos incorrectos')
     };
+
     return(
         <SafeAreaView style={styles.screen}>
             <View style={styles.container}>

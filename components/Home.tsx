@@ -55,7 +55,7 @@ function Home({navigation}: StartProps): React.JSX.Element {
             <View style={styles.centerContainer}>
               <TouchableOpacity style={styles.buttonCor} onPress={irTomarMedicion}>
               <FastImage
-                source={require('../imagenes/h.gif')}
+                source={require('../imagenes/corr.gif')}
                 style={styles.image}
               />
               </TouchableOpacity>
