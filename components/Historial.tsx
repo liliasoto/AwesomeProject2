@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, ActivityIndicator, Alert } from 'react-native';
 import axios from 'axios';
 import { useUser } from '../components/UserContext';
+import { API_URL } from '../config';
 
 interface Registro {
   fecha: string;
@@ -24,7 +25,7 @@ const Historial = (): React.JSX.Element => {
 
       try {
         console.log('User ID:', userId); // Log the userId before making the request
-        const response = await axios.get(`http://localhost:3000/mediciones/usuario/${userId}`);
+        const response = await axios.get(`${API_URL}/mediciones/usuario/${userId}`);
         const data = response.data;
 
         const formattedData = data.map((entry: any) => {

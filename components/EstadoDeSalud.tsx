@@ -1,3 +1,5 @@
+//EstadoDeSalud.tsx
+
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, ActivityIndicator, Alert } from 'react-native';
 import Svg, { Circle, G, Text as SvgText } from 'react-native-svg';
@@ -7,6 +9,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../App';
 import { useUser } from '../components/UserContext';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import { API_URL } from '../config';
 
 
 type StartProps = {
@@ -79,7 +82,7 @@ function EstadoDeSalud({ navigation }: StartProps): React.JSX.Element {
 
       try {
         console.log('User ID:', userId); // Log the userId before making the request
-        const response = await axios.get(`http://localhost:3000/mediciones/usuario/${userId}`);
+        const response = await axios.get(`${API_URL}/mediciones/usuario/${userId}`);
         let data: EstadoSaludEntry[] = response.data;
 
         // Sort data by date in descending order
@@ -130,7 +133,7 @@ function EstadoDeSalud({ navigation }: StartProps): React.JSX.Element {
         const avgPulso = latestData.reduce((acc, entry) => acc + entry.pulso_cardiaco, 0) / latestData.length;
 
         // Fetch user info for age and gender
-        const userResponse = await axios.get(`http://localhost:3000/usuarios/${userId}`);
+        const userResponse = await axios.get(`${API_URL}/usuarios/${userId}`);
         const { fecha_nacimiento, genero } = userResponse.data;
         const age = calculateAge(fecha_nacimiento);
 

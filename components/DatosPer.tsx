@@ -6,6 +6,7 @@ import { Alert, SafeAreaView, ScrollView, StyleSheet, View, TextInput, Button, T
 import { RootStackParamList } from '../App';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { RouteProp, useRoute } from '@react-navigation/native';
+import { API_URL } from '../config';
 
 type DatosPerRouteProp = RouteProp<RootStackParamList, 'DatosPer'>;
 
@@ -43,7 +44,7 @@ function DatosPer({ navigation, route }: StartProps): React.JSX.Element {
             };
 
             // Llamada a la API para registrar al usuario
-            const response = await fetch('http://localhost:3000/usuarios', {
+            const response = await fetch(`${API_URL}/usuarios`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

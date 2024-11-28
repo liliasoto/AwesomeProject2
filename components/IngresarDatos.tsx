@@ -6,6 +6,7 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import axios from 'axios';
 import { useUser } from '../components/UserContext'; // Asegúrate de importar tu contexto
 import FastImage from 'react-native-fast-image';
+import { API_URL } from '../config';
 
 type StartProps = {
     navigation: StackNavigationProp<RootStackParamList, 'Home'>;
@@ -32,7 +33,8 @@ function IngresarDatos({ navigation }: StartProps): React.JSX.Element {
         }
 
         try {
-            const response = await axios.post('http://localhost:3000/mediciones', {
+            console.log('Enviando datos con userId:', userId);
+            const response = await axios.post(`${API_URL}/mediciones`, {
                 nivel_oxigeno: nivelOxParsed,
                 pulso_cardiaco: pulCarParsed,
                 fecha_hora: new Date().toISOString(),
@@ -49,6 +51,7 @@ function IngresarDatos({ navigation }: StartProps): React.JSX.Element {
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 console.error('Axios error message:', error.message);
+                console.error('User ID:', userId);
                 if (error.response) {
                     console.error('Error response data:', error.response.data);
                     console.error('Error response status:', error.response.status);

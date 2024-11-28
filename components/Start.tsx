@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { Alert, SafeAreaView, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View, Image, useColorScheme, TextInput, Button, Text } from 'react-native';
 import { RootStackParamList } from '../App';
 import { useUser } from '../components/UserContext';
+import { API_URL } from '../config';
 
 type StartProps = {
     navigation: StackNavigationProp<RootStackParamList, 'Home'>;
@@ -17,7 +18,7 @@ function Start({navigation}: StartProps): React.JSX.Element {
 
     const btnIngresarOnPress = async () => {
       try {
-          const response = await fetch('http://localhost:3000/login', {
+        const response = await fetch(`${API_URL}/login`,{
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
@@ -31,14 +32,15 @@ function Start({navigation}: StartProps): React.JSX.Element {
           const data = await response.json();
           console.log('Response data:', data); // Add this line
   
+          // En Start.tsx, en la función btnIngresarOnPress
           if (response.ok) {
-              // Extraemos el ID del objeto
-              const userId = data.usuario.id; // Cambiamos aquí
-              console.log('User ID set to:', userId); // Logqear el user ID
+            // Extraemos el ID del objeto
+            const userId = data.usuario._id; // Cambiado de .id a ._id
+            console.log('User ID set to:', userId);
 
-              // Guardar el id en el contexto
-              setUserId(userId); // Usar lo extraido user ID
-              navigation.navigate('Home');
+            // Guardar el id en el contexto
+            setUserId(userId);
+            navigation.navigate('Home');
           } else {
               Alert.alert('Error', data.message);
           }

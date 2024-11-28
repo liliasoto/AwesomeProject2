@@ -1,16 +1,15 @@
 // components/UserContext.tsx
-
 import React, { createContext, useContext, useState } from 'react';
 
 interface UserContextType {
-    userId: number | null;
-    setUserId: React.Dispatch<React.SetStateAction<number | null>>;
+    userId: string | null; // Cambiado de number a string
+    setUserId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [userId, setUserId] = useState<number | null>(null);
+    const [userId, setUserId] = useState<string | null>(null);
 
     return (
         <UserContext.Provider value={{ userId, setUserId }}>

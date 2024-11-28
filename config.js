@@ -1,0 +1,1 @@
+export const API_URL = 'https://mi-backend-productos.onrender.com';
