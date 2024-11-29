@@ -72,7 +72,7 @@ function IngresarDatos({ navigation }: StartProps): React.JSX.Element {
     };
 
     return (
-        <SafeAreaView style={backgroundStyle}>
+        <SafeAreaView style={styles.safeArea}>
             <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={styles.scrollViewContent}>
                 <View style={{ flex: 1, alignItems: 'center' }}>
                     <View style={styles.buttonCor}>
@@ -86,6 +86,7 @@ function IngresarDatos({ navigation }: StartProps): React.JSX.Element {
                         <Text style={styles.greetingText}>Niveles de oxígeno</Text>
                         <TextInput
                             placeholder="Ingrese el porcentaje"
+                            placeholderTextColor="#D3D3D3"
                             style={styles.inputdos}
                             keyboardType="numeric"
                             onChangeText={p => setNivelOx(p)}
@@ -94,6 +95,7 @@ function IngresarDatos({ navigation }: StartProps): React.JSX.Element {
                         <Text style={styles.greetingText}>Pulso cardiaco</Text>
                         <TextInput
                             placeholder="Ingrese los latidos por minuto"
+                            placeholderTextColor="#D3D3D3"
                             style={styles.inputdos}
                             keyboardType="numeric"
                             onChangeText={p => setPulCar(p)}
@@ -114,7 +116,7 @@ function IngresarDatos({ navigation }: StartProps): React.JSX.Element {
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#FFFFFF',
     },
     scrollViewContent: {
         flexGrow: 1,
@@ -141,6 +143,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         borderRadius: 5,
         backgroundColor: '#fff',
+        color: "#212121",
     },
     inputdos: {
         width: 220,
@@ -152,6 +155,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         backgroundColor: '#fff',
         textAlign: 'center',
+        color: "#212121",
     },
     buttonContainer: {
         width: '100%',

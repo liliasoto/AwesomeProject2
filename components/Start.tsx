@@ -2,7 +2,7 @@
 
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState } from 'react';
-import { Alert, SafeAreaView, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View, Image, useColorScheme, TextInput, Button, Text } from 'react-native';
+import { Alert, SafeAreaView, ScrollView, StatusBar, StyleSheet, TouchableOpacity, View, Image, TextInput, Button, Text } from 'react-native';
 import { RootStackParamList } from '../App';
 import { useUser } from '../components/UserContext';
 import { API_URL } from '../config';
@@ -40,6 +40,8 @@ function Start({navigation}: StartProps): React.JSX.Element {
 
             // Guardar el id en el contexto
             setUserId(userId);
+            setContraseña('');
+            setNombreUsuario('');
             navigation.navigate('Home');
           } else {
               Alert.alert('Error', data.message);
@@ -54,11 +56,6 @@ function Start({navigation}: StartProps): React.JSX.Element {
     const handleSignUpPress = () => {
         navigation.navigate('SignUp');
     };
-
-    const cambiarDeUsario = () => {
-        navigation.navigate('CambiarCuenta')
-    }
-    
     
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -75,6 +72,7 @@ function Start({navigation}: StartProps): React.JSX.Element {
               <Text style={styles.label}>Usuario</Text>
               <TextInput 
                 placeholder="Nombre de usuario" 
+                placeholderTextColor="#D3D3D3" // Cambia el color del placeholder a gris claro
                 style={styles.input}
                 value={nombreUsuario}
                 onChangeText={setNombreUsuario}
@@ -82,8 +80,10 @@ function Start({navigation}: StartProps): React.JSX.Element {
               <Text style={styles.label}>Contraseña</Text>
               <TextInput 
                 placeholder="Contraseña" 
+                placeholderTextColor="#D3D3D3" // Cambia el color del placeholder a gris claro
                 secureTextEntry={true}
                 style={styles.input}
+                value={contraseña}
                 onChangeText={p => setContraseña(p)}
               />
               <View style={styles.buttonContainer}>
@@ -155,6 +155,7 @@ function Start({navigation}: StartProps): React.JSX.Element {
         paddingHorizontal: 10,
         marginBottom: 20,
         textAlign: 'left',
+        color: "#212121",
       },
       buttonContainer: {
         width: '100%',

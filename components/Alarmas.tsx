@@ -19,6 +19,7 @@ type Alarma = {
   enabled: boolean;
 };
 
+
 const Alarmas: React.FC<AlarmasProps> = ({ navigation }) => {
   const [alarmas, setAlarmas] = useState<Alarma[]>([]);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -94,7 +95,7 @@ const Alarmas: React.FC<AlarmasProps> = ({ navigation }) => {
           <View style={styles.alarmItem}>
             <View style={styles.alarmText}>
               <Text style={styles.alarmName}>{item.name}</Text>
-              <Text>{item.time} - {item.days.join(', ')}</Text>
+              <Text style={styles.alarmContent}>{item.time} - {item.days.join(', ')}</Text>
             </View>
             <Switch
               value={item.enabled}
@@ -131,6 +132,7 @@ const Alarmas: React.FC<AlarmasProps> = ({ navigation }) => {
 
           <TextInput
             placeholder="Nombre de la alarma"
+            placeholderTextColor="#D3D3D3"
             style={styles.input}
             value={newAlarmName}
             onChangeText={setNewAlarmName}
@@ -189,11 +191,15 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 30, // Ajusta el tamaño de fuente para que coincida con el título
     fontWeight: 'bold',
-    color: '#45504C',
+    color: "#212121",
   },
   alarmName: {
     fontWeight: 'bold',
     fontSize: 18,
+    color: "#212121",
+  },
+  alarmContent:{
+    color: "#212121",
   },
   alarmHeader: {
     flexDirection: 'row',
@@ -212,6 +218,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 10,
     marginBottom: 20,
+    color: "#212121",
   },
   modalContent: {
     flex: 1,
@@ -228,6 +235,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginVertical: 10,
     textAlign: 'center',
+    color: "#212121",
   },
   modalButtons: {
     flexDirection: 'row',

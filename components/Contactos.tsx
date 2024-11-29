@@ -73,6 +73,7 @@ const Contactos = ({ navigation }: ContactosProps): React.JSX.Element => {
             <TextInput
                 style={styles.searchInput}
                 placeholder="Buscar contacto"
+                placeholderTextColor="#D3D3D3"
                 value={search}
                 onChangeText={setSearch}
             />
@@ -97,12 +98,14 @@ const Contactos = ({ navigation }: ContactosProps): React.JSX.Element => {
                         <Text style={styles.modalTitle}>Agregar Contacto</Text>
                         <TextInput
                             placeholder="Nombre"
+                            placeholderTextColor="#D3D3D3"
                             style={styles.input}
                             value={nuevoContacto.nombre}
                             onChangeText={nombre => setNuevoContacto({ ...nuevoContacto, nombre })}
                         />
                         <TextInput
                             placeholder="Correo"
+                            placeholderTextColor="#D3D3D3"
                             style={styles.input}
                             value={nuevoContacto.correo}
                             onChangeText={correo => setNuevoContacto({ ...nuevoContacto, correo })}
@@ -188,6 +191,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 5,
         backgroundColor: '#fff',
+        color: "#212121",
     },
     contactList: {
         marginTop: 20,
@@ -236,6 +240,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 10,
         textAlign: 'center',
+        color: "#212121",
     },
     input: {
         height: 40,
@@ -244,6 +249,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingHorizontal: 10,
         marginBottom: 10,
+        color: "#212121",
     },
     radioContainer: {
         flexDirection: 'row',

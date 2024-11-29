@@ -15,6 +15,7 @@ const Historial = (): React.JSX.Element => {
   const { userId } = useUser(); // Use the user ID from context
   const [historialData, setHistorialData] = useState<Registro[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasData, setHasData] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,9 +40,14 @@ const Historial = (): React.JSX.Element => {
         });
 
         setHistorialData(formattedData.reverse());
+        setHasData(formattedData.length > 0);
       } catch (error) {
-        console.error('Error fetching data', error);
-        Alert.alert('Error', 'Error fetching data from server');
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+          setHasData(false);
+        } else {
+          console.error('Error fetching data', error);
+          Alert.alert('Error', 'Error al conectar con el servidor');
+        }
       } finally {
         setLoading(false);
       }
@@ -74,12 +80,19 @@ const Historial = (): React.JSX.Element => {
         <Image source={require('../imagenes/his.png')} style={styles.alarmIcon} />
         <Text style={styles.alarmText}>Historial</Text>
       </View>
-      <FlatList
-        data={historialData}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={styles.list}
-      />
+        {!hasData ? (
+          <View style={styles.noDataContainer}>
+            <Text style={styles.noDataText}>Aún no hay mediciones registradas</Text>
+            <Text style={styles.noDataSubText}>Las mediciones que realices aparecerán aquí</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={historialData}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => index.toString()}
+            contentContainerStyle={styles.list}
+          />
+        )}
     </View>
   );
 };
@@ -146,6 +159,24 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  noDataContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  noDataText: {
+    fontSize: 18,
+    color: '#45504C',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  noDataSubText: {
+    fontSize: 16,
+    color: '#818181',
+    textAlign: 'center',
   },
 });
 

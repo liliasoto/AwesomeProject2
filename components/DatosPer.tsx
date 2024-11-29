@@ -2,7 +2,7 @@
 
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState } from 'react';
-import { Alert, SafeAreaView, ScrollView, StyleSheet, View, TextInput, Button, Text, TouchableOpacity, Platform } from 'react-native';
+import { Alert, SafeAreaView, ScrollView, StyleSheet, View, TextInput, Text, TouchableOpacity, Platform } from 'react-native';
 import { RootStackParamList } from '../App';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { RouteProp, useRoute } from '@react-navigation/native';
@@ -116,6 +116,7 @@ function DatosPer({ navigation, route }: StartProps): React.JSX.Element {
                     <Text style={styles.labelEs}>Peso en kg</Text>
                     <TextInput
                         placeholder="Tu peso"
+                        placeholderTextColor="#D3D3D3"
                         style={styles.input}
                         onChangeText={p => setPeso(p)}
                         keyboardType="numeric"
@@ -185,6 +186,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginBottom: 20,
         textAlign: 'left',
+        color: "#212121",
     },
     datePicker: {
         width: '100%',

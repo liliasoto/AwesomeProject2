@@ -1,26 +1,60 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Dimensions, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Dimensions, Image, Alert } from 'react-native';
 import Modal from 'react-native-modal';
 import { RootStackParamList } from '../App';
+import { useUser } from '../components/UserContext';
+import axios from 'axios';
+import { API_URL } from '../config';
 
 type StartProps = {
   navigation: StackNavigationProp<RootStackParamList, 'Home'>;
 };
 
-
 function Yo({ navigation }: StartProps): React.JSX.Element {
   const [isModalVisible, setModalVisible] = useState(false);
   const [peso, setPeso] = useState('');
+  const { userId } = useUser();
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
-  const handleAceptar = () => {
-    // Aquí puedes manejar el nuevo peso introducido
-    console.log(`Nuevo peso: ${peso} kg`);
-    setModalVisible(false);
+  const handleAceptar = async () => {
+    if (!userId) {
+      Alert.alert('Error', 'No hay usuario identificado');
+      return;
+    }
+
+    if (!peso || isNaN(parseFloat(peso))) {
+      Alert.alert('Error', 'Por favor, ingrese un peso válido');
+      return;
+    }
+
+    try {
+      const response = await axios.put(`${API_URL}/usuarios/${userId}`, {
+        peso: parseFloat(peso)
+      });
+
+      if (response.status === 200) {
+        Alert.alert('Éxito', 'Peso actualizado correctamente');
+        setModalVisible(false);
+        setPeso('');
+      } else {
+        Alert.alert('Error', 'No se pudo actualizar el peso');
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error('Error al actualizar peso:', error.response?.data);
+        Alert.alert(
+          'Error',
+          error.response?.data?.message || 'Error al actualizar el peso'
+        );
+      } else {
+        console.error('Error desconocido:', error);
+        Alert.alert('Error', 'Error desconocido al actualizar el peso');
+      }
+    }
   };
 
   const irAStart = async () => {
@@ -41,6 +75,7 @@ function Yo({ navigation }: StartProps): React.JSX.Element {
           <TextInput
             style={styles.input}
             placeholder="Introduce tu nuevo peso en kilos"
+            placeholderTextColor="#D3D3D3"
             keyboardType="numeric"
             value={peso}
             onChangeText={setPeso}
@@ -49,7 +84,7 @@ function Yo({ navigation }: StartProps): React.JSX.Element {
             <TouchableOpacity onPress={handleAceptar} style={styles.modalButton}>
               <Text style={styles.modalButtonText}>Aceptar</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={toggleModal} style={styles.modalButton}>
+            <TouchableOpacity onPress={toggleModal} style={[styles.modalButton, styles.cancelButton]}>
               <Text style={styles.modalButtonText}>Cancelar</Text>
             </TouchableOpacity>
           </View>
@@ -58,13 +93,13 @@ function Yo({ navigation }: StartProps): React.JSX.Element {
 
       <View style={styles.flexibleSpace} />
 
-      <TouchableOpacity style={styles.logoutContainer}>
-        <Text style={styles.logoutText} onPress={irAStart}>Cerrar sesión  </Text>
-        <Image source={require('../imagenes/logouticon.png')}  style={styles.logoutIcon} />
+      <TouchableOpacity style={styles.logoutContainer} onPress={irAStart}>
+        <Text style={styles.logoutText}>Cerrar sesión  </Text>
+        <Image source={require('../imagenes/logouticon.png')} style={styles.logoutIcon} />
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -114,6 +149,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 20,
+    color: "#212121",
   },
   modalButtons: {
     flexDirection: 'row',
@@ -125,6 +161,11 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginHorizontal: 10,
+    minWidth: 100,
+    alignItems: 'center',
+  },
+  cancelButton: {
+    backgroundColor: '#818181',
   },
   modalButtonText: {
     color: 'white',
@@ -145,9 +186,8 @@ const styles = StyleSheet.create({
   },
   logoutIcon: {
     width: 18,
-    height: 18, // Ajusta el tamaño de acuerdo a tus necesidades
+    height: 18,
   },
 });
 
 export default Yo;
-

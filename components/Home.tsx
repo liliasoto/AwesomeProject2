@@ -42,10 +42,10 @@ function Home({navigation}: StartProps): React.JSX.Element {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <View style={{ flex: 1 }}>
-        <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
-          <View style={{ backgroundColor: isDarkMode ? Colors.black : Colors.white, flex: 1 }}>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.safeArea}>
+        <ScrollView contentInsetAdjustmentBehavior="automatic" style={styles.scrollContainer}>
+          <View>
             <TouchableOpacity style={styles.buttonUser} onPress={irMenu}>
               <Image
                 source={require('../imagenes/usuariodef.png')} // Ruta corregida
@@ -94,6 +94,14 @@ function Home({navigation}: StartProps): React.JSX.Element {
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  scrollContainer: {
+    flex: 1,
+    backgroundColor: '#FFFFFF', // Fondo blanco del ScrollView
+  },
   buttonUser: {
     backgroundColor: '#32CE8F',
     borderRadius: 1000,

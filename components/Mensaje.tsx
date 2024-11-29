@@ -1,12 +1,11 @@
 // components/Mensaje.tsx
 
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, SafeAreaView, StatusBar, useColorScheme, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, SafeAreaView, Alert } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
 import RNFS from 'react-native-fs';
-import Pdf from 'react-native-pdf';
 
 type MensajeProps = {
     navigation: StackNavigationProp<RootStackParamList, 'Mensaje'>;
@@ -20,7 +19,7 @@ type MensajeItem = {
     tipo?: 'texto' | 'pdf'; // add a type field to handle different message types
 };
 
-const Mensaje = ({ navigation, route }: MensajeProps): React.JSX.Element => {
+const Mensaje = ({ route }: MensajeProps): React.JSX.Element => {
     const { contacto } = route.params;
     const [mensaje, setMensaje] = useState('');
     const [mensajes, setMensajes] = useState<MensajeItem[]>([
@@ -28,23 +27,6 @@ const Mensaje = ({ navigation, route }: MensajeProps): React.JSX.Element => {
         { id: '2', texto: 'Estoy bien, gracias. ¿Y tú?', enviadoPorUsuario: true },
     ]);
 
-    /*FUNCIONABA BIEN ANTES DE LO DEL PDF
-    const handleSend = () => {
-        if (mensaje.trim()) {
-            setMensajes([...mensajes, { id: Date.now().toString(), texto: mensaje, enviadoPorUsuario: true }]);
-            setMensaje('');
-        }
-    };
-
-    
-    const renderItem = ({ item }: { item: MensajeItem }) => (
-        <View style={[styles.messageContainer, item.enviadoPorUsuario ? styles.userMessage : styles.contactMessage]}>
-            <Text style={styles.messageText}>{item.texto}</Text>
-        </View>
-    );
-    */
-
-    //______//
     const handleSend = () => {
         if (mensaje.trim()) {
             setMensajes([...mensajes, { id: Date.now().toString(), texto: mensaje, enviadoPorUsuario: true, tipo: 'texto' }]);
@@ -87,12 +69,8 @@ const Mensaje = ({ navigation, route }: MensajeProps): React.JSX.Element => {
     };
 
     const handleDownloadPdf = (path: string) => {
-        // Logic to download and open the PDF (optional)
-        // You might want to use a library to open the PDF directly
         Alert.alert('PDF Downloaded', `You can find your PDF at: ${path}`);
     };
-    //______//
-
 
     return (
         <SafeAreaView style={styles.container}>
@@ -110,6 +88,7 @@ const Mensaje = ({ navigation, route }: MensajeProps): React.JSX.Element => {
                 <TextInput
                     style={styles.input}
                     placeholder="Escribe un mensaje"
+                    placeholderTextColor="#D3D3D3"
                     value={mensaje}
                     onChangeText={setMensaje}
                 />
@@ -150,9 +129,11 @@ const styles = StyleSheet.create({
     messageList: {
         flex: 1,
         paddingHorizontal: 10,
+        color: "#212121",
     },
     messageListContent: {
         paddingVertical: 10,
+        color: "#212121",
     },
     messageContainer: {
         marginVertical: 5,
@@ -172,6 +153,7 @@ const styles = StyleSheet.create({
     },
     messageText: {
         fontSize: 16,
+        color: '#808080', 
     },
     inputContainer: {
         flexDirection: 'row',
@@ -188,6 +170,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 5,
         paddingHorizontal: 10,
+        color: "#212121",
     },
     sendButton: {
         marginLeft: 10,
@@ -226,6 +209,7 @@ const styles = StyleSheet.create({
     pdfTitle: {
         fontSize: 16,
         fontWeight: 'bold',
+        color: '#808080', 
     },
     downloadButton: {
         marginTop: 5,
