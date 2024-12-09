@@ -1,26 +1,27 @@
-// components/Alarmas.tsx
-
-import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity, TextInput, Switch, Modal, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity, TextInput, Switch, Modal, Image, Alert } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
 import moment from 'moment';
+import { useUser } from './UserContext';
+import axios from 'axios';
+import { API_URL } from '../config';
 
 type AlarmasProps = {
   navigation: NavigationProp<RootStackParamList>;
 };
 
 type Alarma = {
-  id: number;
+  _id: string;
   time: string;
   days: string[];
   name: string;
   enabled: boolean;
 };
 
-
 const Alarmas: React.FC<AlarmasProps> = ({ navigation }) => {
+  const { userId } = useUser();
   const [alarmas, setAlarmas] = useState<Alarma[]>([]);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isModalVisible, setModalVisibility] = useState(false);
@@ -37,6 +38,24 @@ const Alarmas: React.FC<AlarmasProps> = ({ navigation }) => {
     { day: "Sábado", label: "S" },
     { day: "Domingo", label: "D" }
   ];
+
+  useEffect(() => {
+    fetchAlarmas();
+  }, [userId]);
+
+  const fetchAlarmas = async () => {
+    if (!userId) {
+      Alert.alert('Error', 'User ID is not available');
+      return;
+    }
+    try {
+      const response = await axios.get(`${API_URL}/alarmas/usuario/${userId}`);
+      setAlarmas(response.data);
+    } catch (error) {
+      console.error('Error fetching alarms', error);
+      Alert.alert('Error', 'Error fetching alarms from server');
+    }
+  };
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -57,25 +76,43 @@ const Alarmas: React.FC<AlarmasProps> = ({ navigation }) => {
     );
   };
 
-  const addAlarm = () => {
+  const addAlarm = async () => {
     if (newAlarmTime && newAlarmName && newAlarmDays.length > 0) {
-      const newAlarm: Alarma = {
-        id: alarmas.length + 1,
+      const newAlarm = {
+        usuario_id: userId,
         time: newAlarmTime,
         days: newAlarmDays,
         name: newAlarmName,
         enabled: true,
       };
-      setAlarmas([...alarmas, newAlarm]);
-      setModalVisibility(false);
-      setNewAlarmTime(null);
-      setNewAlarmDays([]);
-      setNewAlarmName('');
+      try {
+        const response = await axios.post(`${API_URL}/alarmas`, newAlarm);
+        setAlarmas([...alarmas, response.data]);
+        setModalVisibility(false);
+        setNewAlarmTime(null);
+        setNewAlarmDays([]);
+        setNewAlarmName('');
+      } catch (error) {
+        console.error('Error adding alarm', error);
+        Alert.alert('Error', 'Error adding alarm to server');
+      }
     }
   };
 
-  const toggleAlarm = (id: number) => {
-    setAlarmas(alarmas.map(alarm => alarm.id === id ? { ...alarm, enabled: !alarm.enabled } : alarm));
+  const toggleAlarm = async (id: string) => {
+    try {
+      const alarmToUpdate = alarmas.find(alarm => alarm._id === id);
+      if (alarmToUpdate) {
+        const response = await axios.put(`${API_URL}/alarmas/${id}`, {
+          ...alarmToUpdate,
+          enabled: !alarmToUpdate.enabled
+        });
+        setAlarmas(alarmas.map(alarm => alarm._id === id ? response.data : alarm));
+      }
+    } catch (error) {
+      console.error('Error toggling alarm', error);
+      Alert.alert('Error', 'Error updating alarm on server');
+    }
   };
 
   return (
@@ -90,7 +127,7 @@ const Alarmas: React.FC<AlarmasProps> = ({ navigation }) => {
 
       <FlatList
         data={alarmas}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
           <View style={styles.alarmItem}>
             <View style={styles.alarmText}>
@@ -99,7 +136,7 @@ const Alarmas: React.FC<AlarmasProps> = ({ navigation }) => {
             </View>
             <Switch
               value={item.enabled}
-              onValueChange={() => toggleAlarm(item.id)}
+              onValueChange={() => toggleAlarm(item._id)}
             />
           </View>
         )}
@@ -276,3 +313,134 @@ const styles = StyleSheet.create({
 
 export default Alarmas;
 
+
+
+/*
+import { View, Text, StyleSheet, SafeAreaView, Pressable } from 'react-native'
+import React, { useEffect } from 'react'
+import PushNotification, { Importance } from 'react-native-push-notification'
+import ListAlarms from './ListAlarms'
+import TimePicker from './TimePicker'
+
+
+
+const App = () => {
+
+    useEffect(() => {
+        createChannels();
+    }, []);
+
+    const createChannels = () => {
+      PushNotification.createChannel(
+        {
+            channelId: "alarm-channel",
+            channelName: "Alarm Channel",
+            channelDescription: "Canal para alarmas",
+            playSound: true,
+            soundName: "default",
+            importance: Importance.HIGH,
+            vibrate: true,
+        },
+        (created) => {
+            console.log(`Canal ${created ? "creado" : "no creado"}`);
+            if (created) {
+                console.log("Canal creado exitosamente");
+            } else {
+                console.error("Error al crear el canal");
+            }
+        }
+      );
+    };
+    
+
+
+    const handleNotification = () => {
+
+        PushNotification.cancelAllLocalNotifications();
+
+        
+        PushNotification.localNotificationSchedule({
+            channelId: "test-channel",
+            title: "Alarm Ringing",
+
+            message: "Message Here",
+            importance: "high", // Importance.HIGH
+            priority: "high",
+            actions: ["Accept", "Reject"],
+            date: new Date(Date.now() + 100),
+            allowWhileIdle: true,
+            invokeApp: false,
+
+            //repeatTime: 2,
+        });
+    
+        PushNotification.configure({
+            onAction: function (notification) {
+                if (notification.action === 'Accept') {
+                    console.log('Alarm Snoozed');
+                }
+                else if (notification.action === 'Reject') {
+                    console.log('Alarm Stoped');
+                    //PushNotification.cancelAllLocalNotifications();
+                }
+                else {
+                    console.log('Notification opened');
+                }
+            },
+            
+        });
+    }
+
+    return (
+        <View style={styles.mainContainer}>
+            <Text style={styles.heading}>ALARM</Text>
+            <Pressable
+                style={styles.buttonStyle}
+                onPress={() => {
+                    handleNotification(),
+                        console.log("Schedule Notification")
+                }}>
+            </Pressable>
+
+            <SafeAreaView style={styles.listAlarms}>
+                <ListAlarms />
+            </SafeAreaView>
+            <View style={styles.timePicker}>
+                <TimePicker />
+            </View>
+        </View>
+    );
+}
+
+
+
+const styles = StyleSheet.create({
+    mainContainer: {
+        flex: 1,
+        alignItems: 'center'
+    },
+    heading: {
+        fontSize: 25,
+        padding: 20,
+        color: 'black'
+    },
+    timePicker: {
+        paddingTop: "10%",
+        width: "50%",
+        bottom: 20,
+    },
+    listAlarms: {
+        flex: 1,
+        width: "100%",
+    },
+
+    buttonStyle: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 25,
+    },
+
+})
+
+export default App;
+*/

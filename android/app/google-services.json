@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "2257203519",
+    "project_id": "vitalcheck-4827f",
+    "storage_bucket": "vitalcheck-4827f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:2257203519:android:270c954f75708d337aa38a",
+        "android_client_info": {
+          "package_name": "com.awesomeproject2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASFCa25H0vKrSiqS3hJjIGw_6kRJxDYO0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

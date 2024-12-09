@@ -63,7 +63,7 @@ function Start({navigation}: StartProps): React.JSX.Element {
           <View style={styles.flexibleSpace}></View>
             <View style={styles.headerContainer}>
               <Image
-                source={require('../imagenes/usuariodef.png')}
+                source={require('../imagenes/loguito.png')}
                 style={styles.image}
               />
               <Text style={styles.greetingText}>Bienvenido</Text>
