@@ -2,7 +2,7 @@
 
 VitalCheck es una aplicación móvil desarrollada con React Native que permite a los usuarios monitorear sus signos vitales, específicamente los niveles de oxígeno en sangre y el pulso cardíaco. La aplicación también incluye funcionalidades como historial de mediciones, configuración de alarmas personalizadas y gestión de perfil de usuario.
 
-## Características Principales
+## Características principales
 
 - 📱 Interfaz de usuario intuitiva y moderna
 - 🔐 Sistema de autenticación de usuarios
@@ -12,14 +12,16 @@ VitalCheck es una aplicación móvil desarrollada con React Native que permite a
 - 👤 Gestión de perfil de usuario
 - 📊 Estadísticas y gráficos de salud
 
-## Requisitos Previos
+## Propósito dentro del proyecto global
+
+Este repositorio cuenta con el código de la aplicación móvil, el proyecto en general está compuesto por dos partes, el FrontEnd que es este, y el BackEnd.
+
+## Requisitos previos
 
 - Node.js (v14 o superior)
-- npm o yarn
-- React Native CLI
+- npm (v10 o superior)
+- React Native
 - Android Studio (para desarrollo en Android)
-- Xcode (para desarrollo en iOS)
-- MongoDB (para el backend)
 
 ## Instalación
 
@@ -54,9 +56,9 @@ npm start
     › Press a │ open Android
     ```
 
-Asegúrate de tener un emulador de Android abierto antes de seleccionar la opción `a`.
+Asegúrate de tener un emulador de Android abierto o un dispositivo conectado antes de seleccionar la opción `a`.
 
-## Estructura del Proyecto
+## Estructura del proyecto
 
 ```
 vitalcheck/
@@ -67,40 +69,37 @@ vitalcheck/
 └── package.json
 ```
 
-## Funcionalidades Principales
+## Funcionalidades principales
 
-### Autenticación de Usuario
+### Autenticación de usuario
 - Registro de nuevos usuarios
 - Inicio de sesión
 - Recuperación de contraseña
 
-### Monitoreo de Signos Vitales
+### Monitoreo de signos vitales
 - Registro de niveles de oxígeno
 - Registro de pulso cardíaco
 - Visualización de datos en tiempo real
 
-### Historial y Estadísticas
+### Historial y estadísticas
 - Visualización de historial de mediciones
 - Gráficos estadísticos
 - Exportación de datos
 
-### Sistema de Alarmas
+### Sistema de alarmas
 - Configuración de alarmas personalizadas
 - Recordatorios de medición
 - Notificaciones push
 
-## Tecnologías Utilizadas
+## Tecnologías utilizadas
 
 - React Native
 - TypeScript
 - MongoDB
 - Express.js
 - Node.js
-- AsyncStorage
-- React Navigation
-- Axios
 
-## API y Backend
+## API y backend
 
 La aplicación se conecta a un backend desarrollado con Node.js y MongoDB. El backend proporciona endpoints para:
 
@@ -129,9 +128,8 @@ Lilia Soto Llamas
 Email - 0.lilia.soto.0@gmail.com
 
 Link del proyecto: [https://github.com/liliasoto/AwesomeProject2](https://github.com/liliasoto/AwesomeProject2)
-```
 
-## Agradecimientos
+## Comienza ya
 
 - [React Native](https://reactnative.dev/)
 - [MongoDB](https://www.mongodb.com/)
