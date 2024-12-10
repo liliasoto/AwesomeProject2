@@ -21,7 +21,7 @@ Este repositorio cuenta con el código de la aplicación móvil, el proyecto en 
 - Node.js (v14 o superior)
 - npm (v10 o superior)
 - React Native
-- Android Studio (para desarrollo en Android)
+- Android Studio (para desarrollo en Android) (Android SDK Platform 34)
 
 ## Instalación
 
