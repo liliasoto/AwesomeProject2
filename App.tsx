@@ -14,8 +14,7 @@ import EstadoDeSalud from './components/EstadoDeSalud';
 import Historial from './components/Historial';
 import Yo from './components/Yo';
 import { UserProvider } from './components/UserContext'; 
-import messaging from '@react-native-firebase/messaging';
-import PushNotification, { Importance } from 'react-native-push-notification';
+import PushNotification from "react-native-push-notification";
 
 type Contacto = {
   id: string;
@@ -67,6 +66,7 @@ function App(): React.JSX.Element {
   }, []);
   */
 
+  /*
   useEffect(() => {
     // Crear el canal de notificaciones si no existe
     PushNotification.createChannel(
@@ -131,6 +131,7 @@ function App(): React.JSX.Element {
     // Limpiar el suscriptor cuando el componente se desmonte
     return unsubscribe;
   }, []);
+  */
 
   return (
     <UserProvider>

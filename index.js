@@ -3,9 +3,55 @@
  * */
 
 
-import {AppRegistry} from 'react-native';
+import {AppRegistry, PermissionsAndroid, Platform } from 'react-native';
+import PushNotification from 'react-native-push-notification';
 import App from './App';
 import {name as appName} from './app.json';
+
+// Solicitar permisos para notificaciones en Android 13+
+if (Platform.OS === "android" && Platform.Version >= 33) {
+  PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS)
+    .then((result) => {
+      if (result === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("Notification permission granted");
+      } else {
+        console.log("Notification permission denied");
+      }
+    })
+    .catch((error) => {
+      console.error("Permission request error:", error);
+    });
+}
+
+// Configuración de Push Notifications
+PushNotification.configure({
+  onRegister: function (token) {
+    console.log('TOKEN:', token);
+  },
+  onNotification: function (notification) {
+    console.log('NOTIFICATION:', notification);
+  },
+  permissions: {
+    alert: true,
+    badge: true,
+    sound: true,
+  },
+  popInitialNotification: true,
+  requestPermissions: true,
+});
+
+PushNotification.createChannel(
+  {
+    channelId: "default-channel-id2", // Asegúrate de que sea único
+    channelName: "Default Channel",
+    channelDescription: "This is the default channel", // Agrega una descripción válida
+    playSound: true,
+    soundName: "default", // Usa "default" para probar
+    importance: PushNotification.Importance.HIGH, // Usa la constante de importancia
+    vibrate: true,
+  },
+  (created) => console.log(`Channel created: ${created ? "yes" : "no"}`) // Confirma si el canal se creó
+);
 
 AppRegistry.registerComponent(appName, () => App);
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity, TextInput, Switch, Modal, Image, Alert } from 'react-native';
+import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity, TextInput, Switch, Modal, Image, Alert, Platform, PermissionsAndroid } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
@@ -7,6 +7,7 @@ import moment from 'moment';
 import { useUser } from './UserContext';
 import axios from 'axios';
 import { API_URL } from '../config';
+import PushNotification from 'react-native-push-notification';
 
 type AlarmasProps = {
   navigation: NavigationProp<RootStackParamList>;
@@ -30,16 +31,17 @@ const Alarmas: React.FC<AlarmasProps> = ({ navigation }) => {
   const [newAlarmName, setNewAlarmName] = useState('');
 
   const daysOfWeek = [
+    { day: "Domingo", label: "D" },
     { day: "Lunes", label: "L" },
     { day: "Martes", label: "Ma" },
     { day: "Miércoles", label: "Mi" },
     { day: "Jueves", label: "J" },
     { day: "Viernes", label: "V" },
-    { day: "Sábado", label: "S" },
-    { day: "Domingo", label: "D" }
+    { day: "Sábado", label: "S" }
   ];
 
   useEffect(() => {
+    //testPush2();
     fetchAlarmas();
   }, [userId]);
 
@@ -51,6 +53,12 @@ const Alarmas: React.FC<AlarmasProps> = ({ navigation }) => {
     try {
       const response = await axios.get(`${API_URL}/alarmas/usuario/${userId}`);
       setAlarmas(response.data);
+      // Programa todas las alarmas existentes
+      response.data.forEach((alarm: Alarma) => {
+        if (alarm.enabled) {
+          scheduleNotification(alarm);
+        }
+      });
     } catch (error) {
       console.error('Error fetching alarms', error);
       Alert.alert('Error', 'Error fetching alarms from server');
@@ -75,7 +83,8 @@ const Alarmas: React.FC<AlarmasProps> = ({ navigation }) => {
       prevDays.includes(day) ? prevDays.filter(d => d !== day) : [...prevDays, day]
     );
   };
-
+  
+  
   const addAlarm = async () => {
     if (newAlarmTime && newAlarmName && newAlarmDays.length > 0) {
       const newAlarm = {
@@ -87,7 +96,9 @@ const Alarmas: React.FC<AlarmasProps> = ({ navigation }) => {
       };
       try {
         const response = await axios.post(`${API_URL}/alarmas`, newAlarm);
-        setAlarmas([...alarmas, response.data]);
+        const addedAlarm = response.data;
+        setAlarmas([...alarmas, addedAlarm]);
+        scheduleNotification(addedAlarm); // Programa la notificación
         setModalVisibility(false);
         setNewAlarmTime(null);
         setNewAlarmDays([]);
@@ -98,16 +109,25 @@ const Alarmas: React.FC<AlarmasProps> = ({ navigation }) => {
       }
     }
   };
+  
 
   const toggleAlarm = async (id: string) => {
     try {
       const alarmToUpdate = alarmas.find(alarm => alarm._id === id);
       if (alarmToUpdate) {
-        const response = await axios.put(`${API_URL}/alarmas/${id}`, {
+        const updatedAlarm = {
           ...alarmToUpdate,
-          enabled: !alarmToUpdate.enabled
-        });
+          enabled: !alarmToUpdate.enabled,
+        };
+        const response = await axios.put(`${API_URL}/alarmas/${id}`, updatedAlarm);
         setAlarmas(alarmas.map(alarm => alarm._id === id ? response.data : alarm));
+  
+        if (updatedAlarm.enabled) {
+          scheduleNotification(updatedAlarm); // Activa la notificación
+        } else {
+          cancelNotifications(updatedAlarm._id); // Cancela la notificación
+        }
+        checkScheduledNotifications();
       }
     } catch (error) {
       console.error('Error toggling alarm', error);
@@ -115,6 +135,230 @@ const Alarmas: React.FC<AlarmasProps> = ({ navigation }) => {
     }
   };
 
+  const testPush = () => {
+    PushNotification.localNotification({
+      channelId: "default-channel-id2", 
+      title: "My Notification Title",
+      message: "My Notification Message",
+    });
+  };
+
+  const testPush2 = () => {
+    const now = new Date();
+    now.setSeconds(now.getSeconds() + 5); // Programar para 5 segundos en el futuro
+    
+    try {
+      PushNotification.localNotificationSchedule({
+        channelId: "default-channel-id2",
+        id: 1,
+        title: "Notificación de prueba",
+        message: "Esta es una notificación de prueba programada",
+        date: now,
+        allowWhileIdle: true,
+        importance: 'high',
+        priority: 'high',
+      });
+      
+      console.log("Notificación de prueba programada para:", now.toLocaleString());
+    } catch (error) {
+      console.error("Error al programar la notificación de prueba:", error);
+      Alert.alert("Error", "No se pudo programar la notificación de prueba. Por favor, verifica los permisos de la aplicación.");
+    }
+  };
+
+  /*
+  const scheduleNotification = (alarm: Alarma) => {
+    const [hours, minutes] = alarm.time.split(':').map(Number);
+  
+    alarm.days.forEach((day) => {
+      const dayIndex = daysOfWeek.findIndex(d => d.day === day);
+      if (dayIndex >= 0) {
+        const notificationId = `${alarm._id}-${dayIndex}`;
+        const nextDate = calculateNextDate(dayIndex, hours, minutes);
+  
+        console.log(`Intentando programar notificación para ${alarm.name} en ${day} a las ${alarm.time}`);
+        console.log(`Próxima ocurrencia: ${nextDate.toLocaleString()}`);
+        console.log(`ID de notificación: ${notificationId}`);
+  
+        try {
+          PushNotification.localNotificationSchedule({
+            channelId: "default-channel-id2",
+            id: parseInt(notificationId.replace(/\D/g, '')),
+            title: alarm.name,
+            message: `Es hora de: ${alarm.name}`,
+            date: nextDate,
+            allowWhileIdle: true,
+            repeatType: 'week',
+            repeatTime: 7 * 24 * 60 * 60 * 1000,
+            importance: 'high',
+            priority: 'high',
+            userInfo: { alarmId: alarm._id, day: day },
+          });
+          console.log(`Alarma programada con éxito para: ${nextDate.toLocaleString()}`);
+          
+          // Verificar si la notificación se programó correctamente
+          PushNotification.getScheduledLocalNotifications((notifications) => {
+            const scheduledNotification = notifications.find(n => n.id === notificationId.replace(/\D/g, ''));
+            if (scheduledNotification) {
+              console.log(`Notificación verificada en el sistema para: ${new Date(scheduledNotification.date).toLocaleString()}`);
+            } else {
+              console.log(`ADVERTENCIA: No se pudo verificar la notificación en el sistema para ${alarm.name} en ${day}`);
+            }
+          });
+        } catch (error) {
+          console.error(`Error al programar la alarma para ${alarm.name}:`, error);
+        }
+      }
+    });
+  };
+  */
+  const cancelNotifications = (alarmId: string) => {
+    daysOfWeek.forEach((_, index) => {
+      const notificationId = `${alarmId}-${index}`;
+      PushNotification.cancelLocalNotification(notificationId);
+    });
+  };
+  /*
+  const calculateNextDate = (dayIndex: number, hours: number, minutes: number) => {
+    const now = new Date();
+    const targetDate = new Date();
+  
+    // Ajustar la fecha al día correspondiente
+    const currentDay = now.getDay();
+    let daysUntilTarget = (dayIndex - currentDay + 7) % 7;
+  
+    if (daysUntilTarget === 0) {
+      // Si es hoy, verifica si la hora ya pasó
+      targetDate.setHours(hours, minutes, 0, 0);
+      if (targetDate <= now) {
+        daysUntilTarget = 7; // Programar para la próxima semana
+      }
+    }
+  
+    targetDate.setDate(now.getDate() + daysUntilTarget);
+    targetDate.setHours(hours, minutes, 0, 0);
+  
+    console.log(`Fecha calculada para el día ${daysOfWeek[dayIndex].day}: ${targetDate}`);
+    return targetDate;
+  };
+  */
+  
+  const checkScheduledNotifications = () => {
+    PushNotification.getScheduledLocalNotifications((notifications) => {
+      console.log("Notificaciones programadas actualmente:");
+      notifications.forEach((notification) => {
+        console.log(`ID: ${notification.id}, Título: ${notification.title}, Fecha: ${new Date(notification.date).toLocaleString()}`);
+      });
+    });
+  };
+
+  // Aquí ya funciona a la hora
+  /*
+  const scheduleNotification = (alarm: Alarma) => {
+    const [hours, minutes] = alarm.time.split(':').map(Number);
+  
+    const notificationDate = new Date();
+    notificationDate.setHours(hours, minutes, 0, 0);
+  
+    if (isNaN(notificationDate.getTime())) {
+      console.error("Fecha inválida calculada para la notificación.");
+      return;
+    }
+    
+    if (notificationDate <= new Date()) {
+        notificationDate.setDate(notificationDate.getDate() + 1);
+    }
+    
+    console.log(`Fecha calculada para la notificación: ${notificationDate}`);
+  
+    console.log(`Programando notificación para ${alarm.name} a las ${alarm.time}`);
+  
+    try {
+      PushNotification.localNotificationSchedule({
+        channelId: "default-channel-id2",
+        id: 2, // Cambia a un valor fijo temporalmente
+        title: `¡Hora de ${alarm.name}!`,
+        message: `Alarma programada para ${alarm.name}`,
+        date: notificationDate,
+        allowWhileIdle: true,
+        importance: 'high',
+        priority: 'high',
+      });
+      console.log(`Notificación programada correctamente para ${notificationDate.toLocaleString()}`);
+    } catch (error) {
+      console.error(`Error al programar la notificación para ${alarm.name}:`, error);
+    }
+  };
+  */
+  const scheduleNotification = (alarm: Alarma) => {
+    const [hours, minutes] = alarm.time.split(':').map(Number);
+  
+    alarm.days.forEach((day) => {
+      const dayIndex = daysOfWeek.findIndex(d => d.day === day);
+      if (dayIndex >= 0) {
+        const notificationId = `${alarm._id}-${dayIndex}`;
+        const nextDate = calculateNextDate(dayIndex, hours, minutes);
+  
+        console.log(`Intentando programar notificación para ${alarm.name} en ${day} a las ${alarm.time}`);
+        console.log(`Próxima ocurrencia: ${nextDate.toLocaleString()}`);
+        console.log(`ID de notificación: ${notificationId}`);
+  
+        try {
+          PushNotification.localNotificationSchedule({
+            channelId: "default-channel-id2",
+            id: 2,
+            title: alarm.name,
+            message: `Es hora de: ${alarm.name}`,
+            date: nextDate,
+            allowWhileIdle: true,
+            repeatType: 'week',
+            repeatTime: 7 * 24 * 60 * 60 * 1000,
+            importance: 'high',
+            priority: 'high',
+            userInfo: { alarmId: alarm._id, day: day },
+          });
+          console.log(`Alarma programada con éxito para: ${nextDate.toLocaleString()}`);
+          
+          // Verificar si la notificación se programó correctamente
+          PushNotification.getScheduledLocalNotifications((notifications) => {
+            const scheduledNotification = notifications.find(n => n.id === notificationId.replace(/\D/g, ''));
+            if (scheduledNotification) {
+              console.log(`Notificación verificada en el sistema para: ${new Date(scheduledNotification.date).toLocaleString()}`);
+            } else {
+              console.log(`ADVERTENCIA: No se pudo verificar la notificación en el sistema para ${alarm.name} en ${day}`);
+            }
+          });
+        } catch (error) {
+          console.error(`Error al programar la alarma para ${alarm.name}:, error`);
+        }
+      }
+    });
+  };
+  
+  
+  
+  const calculateNextDate = (dayIndex: number, hours: number, minutes: number) => {
+    const now = new Date();
+    const targetDate = new Date();
+  
+    // Ajustar la fecha al día correspondiente
+    const currentDay = now.getDay();
+    let daysUntilTarget = (dayIndex - currentDay + 7) % 7;
+  
+    if (daysUntilTarget === 0) {
+      targetDate.setHours(hours, minutes, 0, 0);
+      if (targetDate <= now) {
+        daysUntilTarget = 7; // Si ya pasó, se programa para la siguiente semana
+      }
+    }
+  
+    targetDate.setDate(now.getDate() + daysUntilTarget);
+    targetDate.setHours(hours, minutes, 0, 0);
+    return targetDate;
+  };
+  
+  
+  
   return (
     <View style={styles.container}>
       <View style={styles.alarmHeader}>
@@ -141,6 +385,7 @@ const Alarmas: React.FC<AlarmasProps> = ({ navigation }) => {
           </View>
         )}
       />
+
 
       <Modal visible={isModalVisible} animationType="slide">
         <View style={styles.modalContent}>
